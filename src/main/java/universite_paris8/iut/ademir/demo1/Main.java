@@ -15,6 +15,7 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);
+        //ddd
     }
 
     public static void main(String[] args) {
