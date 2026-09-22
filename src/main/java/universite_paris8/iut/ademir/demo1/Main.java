@@ -8,6 +8,7 @@ import java.io.IOException;
 
 public class Main extends Application {
     @Override
+    //test
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("jeu.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1835, 1024);
