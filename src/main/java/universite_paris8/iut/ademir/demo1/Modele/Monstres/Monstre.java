@@ -45,33 +45,20 @@ public class Monstre {
         this.recompense = recompense;
         this.indiceChemin = 0;
         this.degat = degat;
-
         this.monstreID = "monstre" + compteurID;
-
-
         this.compteurPoison = 0;
         this.compteurGlace = 0;
-
         this.vitesse = vitesse;
         this.vitesseNormal = vitesseNormal;
-
         this.monstreEmpoisone = false;
-
         this.chemin = chemin;
         this.depart = chemin.get(0);
-
-
         this.pv = new SimpleIntegerProperty(pv);
         this.pvMax = pv;
         this.x = new SimpleDoubleProperty(depart.getX() * 64);
         this.y = new SimpleDoubleProperty(depart.getY() * 64);
-
-
         this.monstreID = "monstre" + compteurID;
-
         this.glace = new SimpleBooleanProperty(false);
-
-
         compteurID++;
     }
 
@@ -90,7 +77,6 @@ public class Monstre {
                 setVitesse(vitesseNormal);
                 System.out.println("fin de effet Glace");
             }
-
             compteurGlace++;
         }
 
@@ -128,8 +114,6 @@ public class Monstre {
                     y.set(cibleY);
                 }
             }
-
-
             if (x.get() == posSuivante.getX() * 64 && y.get() == posSuivante.getY() * 64) {
                 this.indiceChemin++;
             }

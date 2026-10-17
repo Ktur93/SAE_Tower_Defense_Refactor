@@ -25,50 +25,48 @@ public class Vague {
     public void creeVague1(ArrayList<Position> chemin1) {
         this.monstresVague.clear();
         for (int i = 0; i < 5; i++) {
-            monstresVague.add(new Zombie(chemin1));
+            monstresVague.add(MonstreFactory.creerZombie(chemin1));
         }
     }
 
     public void creeVague2(ArrayList<Position> chemin1, ArrayList<Position> chemin2) {
         this.monstresVague.clear();
         for (int i = 0; i < 10; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
+            monstresVague.add(MonstreFactory.creerZombie(chemin1));
+            monstresVague.add(MonstreFactory.creerAraignee(chemin2));
         }
     }
 
     public void creeVague3(ArrayList<Position> chemin1, ArrayList<Position> chemin2) {
         this.monstresVague.clear();
-
         for (int i = 0; i < 15; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
-            monstresVague.add(new Squelette(chemin1));
+            monstresVague.add(MonstreFactory.creerZombie(chemin1));
+            monstresVague.add(MonstreFactory.creerAraignee(chemin2));
+            monstresVague.add(MonstreFactory.creerSquelette(chemin1));
         }
     }
 
     public void creeVague4(ArrayList<Position> chemin1, ArrayList<Position> chemin2, ArrayList<Position> chemin3) {
         this.monstresVague.clear();
-
         for (int i = 0; i < 15; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
-            monstresVague.add(new Squelette(chemin3));
-            monstresVague.add(new Pillager(chemin2));
+            monstresVague.add(MonstreFactory.creerZombie(chemin1));
+            monstresVague.add(MonstreFactory.creerAraignee(chemin2));
+            monstresVague.add(MonstreFactory.creerSquelette(chemin3));
+            monstresVague.add(MonstreFactory.creerPillager(chemin2));
         }
     }
 
     public void creeVague5(ArrayList<Position> chemin1, ArrayList<Position> chemin2, ArrayList<Position> chemin3) {
         this.monstresVague.clear();
-
         for (int i = 0; i < 20; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
-            monstresVague.add(new Squelette(chemin3));
-            monstresVague.add(new Pillager(chemin3));
+            monstresVague.add(MonstreFactory.creerZombie(chemin1));
+            monstresVague.add(MonstreFactory.creerAraignee(chemin2));
+            monstresVague.add(MonstreFactory.creerSquelette(chemin3));
+            monstresVague.add(MonstreFactory.creerPillager(chemin3));
         }
-        monstresVague.add(new Boss(chemin1));
+        monstresVague.add(MonstreFactory.creerBoss(chemin1));
     }
+
 
     public void mettreAJourVague(int compteur, ObservableList<Monstre> monstresPartie) {
         if (indiceMonstre >= monstresVague.size()) {

@@ -308,9 +308,6 @@ public class Partie {
         }
     }
 
-
-
-
     public int getRubis() {
         return this.rubis;
     }
