@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
-import universite_paris8.iut.ademir.demo1.Modele.Projectile.ProjectileBoulet;
 
 
 public abstract class Tour {
@@ -79,7 +78,13 @@ public abstract class Tour {
     }
 
     public abstract void ameliorer();
-    public abstract Projectile creerProjectile(Monstre cible);
+    public Projectile creerProjectile(Monstre cible) {
+        double x = getPosition().getX() * 64;
+        double y = getPosition().getY() * 64;
+        return nouveauProjectile(x, y, cible);
+    }
+
+    protected abstract Projectile nouveauProjectile(double x, double y, Monstre cible);
 
 
 

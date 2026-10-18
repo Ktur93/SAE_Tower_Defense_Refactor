@@ -61,6 +61,7 @@ public class Controller implements Initializable {
     private Partie partie;
     private CarteVue carteVue;
     private String tourSelectionne;
+    private TourFactory tourFactory = new TourFactory();
     private boolean achatCase = false;
     private boolean ameliorerTour = false;
     private boolean defaiteLance;
@@ -293,18 +294,7 @@ public class Controller implements Initializable {
 
 
     public Tour creerTourSelectionnee(String tourSelectionnee, Position position) {
-        switch (tourSelectionnee) {
-            case "CANON":
-                return new TourCanon(position);
-            case "ARCHER":
-                return new TourArcher(position);
-            case "GLACE":
-                return new TourGlace(position);
-            case "POISON":
-                return new TourPoison(position);
-            default:
-                return null;
-        }
+        return tourFactory.creerTour(tourSelectionnee, position);
     }
 
 
