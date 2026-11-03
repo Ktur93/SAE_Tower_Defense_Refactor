@@ -12,7 +12,7 @@ public class TourArcher extends Tour {
     }
 
     @Override
-    public void ameliorer() { // test t
+    public void ameliorer() { // test tz
         this.setAtk(this.getAtk() + 10);
         this.setPorter(this.getPorter() + 1);
         this.setCadence(this.getCadence() - 2);
