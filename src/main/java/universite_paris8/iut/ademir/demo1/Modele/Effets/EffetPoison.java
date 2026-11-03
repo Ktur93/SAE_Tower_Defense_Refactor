@@ -24,8 +24,6 @@ public class EffetPoison extends Effet {
     }
 
     public void appliquer(Monstre monstre) {
-        // A faire : deplacer ici les degats reguliers du poison
-        // et appelé cette methode depuis Monstre.avancer().
 
         if(this.actif){
             if (this.compteur%45==0) {

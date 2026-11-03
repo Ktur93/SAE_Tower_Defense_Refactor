@@ -24,7 +24,6 @@ public class EffetGlace extends Effet {
     }
 
     public void appliquer(Monstre monstre) {
-        // appelé cette methode depuis Monstre.avancer().
         if (this.actif) {
             monstre.setVitesse(2);
             if(this.compteur != 0 && this.compteur%600 == 0){
