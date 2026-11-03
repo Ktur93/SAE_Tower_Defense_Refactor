@@ -16,4 +16,6 @@ public abstract class Effet {
     public abstract boolean isActif();
 
     public abstract void activer();
+
+    public abstract int getCompteur();
 }
