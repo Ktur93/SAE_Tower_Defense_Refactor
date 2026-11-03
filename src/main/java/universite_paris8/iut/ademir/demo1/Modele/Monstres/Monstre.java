@@ -5,24 +5,31 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.geometry.Pos;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import java.util.ArrayList;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import universite_paris8.iut.ademir.demo1.Modele.Effets.Effet;
+import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetGlace;
+import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetPoison;
 
 public class Monstre {
     private int recompense;
     private int indiceChemin;
     private int degat;
-    private int compteurPoison;
-    private int compteurGlace;
+
+    private Effet effetPoison;
+    private Effet effetGlace;
+
+
 
     private double vitesse;
     private double vitesseNormal;
 
     private ArrayList<Position> chemin;
     private Position depart;
+
+
 
     private IntegerProperty pv;
     private int pvMax;
@@ -32,12 +39,11 @@ public class Monstre {
     private String monstreID;
 
 
-    private boolean monstreEmpoisone;
+
 
     private static int compteurID = 0;
 
     private BooleanProperty glace;
-
 
 
 
@@ -49,13 +55,12 @@ public class Monstre {
         this.monstreID = "monstre" + compteurID;
 
 
-        this.compteurPoison = 0;
-        this.compteurGlace = 0;
+
+
 
         this.vitesse = vitesse;
         this.vitesseNormal = vitesseNormal;
 
-        this.monstreEmpoisone = false;
 
         this.chemin = chemin;
         this.depart = chemin.get(0);
@@ -70,28 +75,20 @@ public class Monstre {
         this.monstreID = "monstre" + compteurID;
 
         this.glace = new SimpleBooleanProperty(false);
+        this.effetPoison = new EffetPoison();
+        this.effetGlace = new EffetGlace();
 
 
         compteurID++;
     }
 
     public void avancer() {
-        if(monstreEmpoisone == true){
-            if (compteurPoison%45==0) {
-                pv.setValue(getPv() - 10);
-            }
-            compteurPoison++;
+        if (effetPoison.isActif()) {
+            effetPoison.appliquer(this);
         }
 
-        if (this.estGlace()) {
-            setVitesse(2);
-            if(compteurGlace != 0 && compteurGlace%600 == 0){
-                this.glace.set(false);
-                setVitesse(vitesseNormal);
-                System.out.println("fin de effet Glace");
-            }
-
-            compteurGlace++;
+        if (effetGlace.isActif()) {
+            effetGlace.appliquer(this);
         }
 
         if (!estArrive()) {
@@ -175,6 +172,14 @@ public class Monstre {
     }
 
 
+    public double getVitesseNormal() {
+        return this.vitesseNormal;
+    }
+
+
+
+
+
 
 
     public void recevoirDegats(int degats) {
@@ -183,13 +188,12 @@ public class Monstre {
 
     public void recevoirDegatsGlace(int degats) {
         pv.setValue(getPv() - degats);
-        compteurGlace = 0;
         setGlace(true);
+        this.effetGlace.activer();
     }
 
     public void recevoirDegatsPoison(int degats) {
-        pv.setValue(getPv() - degats);
-        monstreEmpoisone = true;
+        effetPoison.activer();
     }
 
 

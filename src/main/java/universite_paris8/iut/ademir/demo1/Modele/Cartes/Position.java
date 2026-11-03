@@ -11,11 +11,12 @@ public class Position {
         this.x = x;
         this.y = y;
     }
-
+    // a changer pour mettre getLigne
     public int getX() {
         return x;
     }
 
+    // a changer pour mettre getColonne
     public int getY() {
         return y;
     }
