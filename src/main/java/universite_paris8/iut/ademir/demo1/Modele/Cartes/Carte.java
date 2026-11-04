@@ -180,44 +180,10 @@ public class Carte {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void setCarte(int x, int y, int code) {
-        if (dansCarte(x, y)) {
+        if (estDansCarte(x, y)) {
             carte[y][x] = code;
         }
     }
 
-    public boolean dansCarte(int x, int y) {
-        if(x >= 0 && x < getLargeur() && y >= 0 && y < getHauteur()){
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

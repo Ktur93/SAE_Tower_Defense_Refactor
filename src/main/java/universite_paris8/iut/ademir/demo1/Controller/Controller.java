@@ -335,29 +335,24 @@ public class Controller implements Initializable {
         btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
     }
 
+    private void definirBoutonsActifOuDesactif(boolean desactiveOuPas) {
+        btnRecommencer.setDisable(desactiveOuPas);
+        btnVague.setDisable(desactiveOuPas);
+        btnArcher.setDisable(desactiveOuPas);
+        btnCanon.setDisable(desactiveOuPas);
+        btnAcheterCase.setDisable(desactiveOuPas);
+        btnGlace.setDisable(desactiveOuPas);
+        btnPoison.setDisable(desactiveOuPas);
+        btnAmeliorer.setDisable(desactiveOuPas);
+    }
+
     public void desactiverToutLesBoutons() {
-        btnRecommencer.setDisable(true);
-        btnVague.setDisable(true);
-        btnArcher.setDisable(true);
-        btnCanon.setDisable(true);
-        btnAcheterCase.setDisable(true);
-        btnGlace.setDisable(true);
-        btnRecommencer.setDisable(true);
-        btnPoison.setDisable(true);
-        btnAmeliorer.setDisable(true);
+        definirBoutonsActifOuDesactif(true);
         this.defaiteLance = true;
     }
 
     public void activerToutLesBoutons() {
-        btnRecommencer.setDisable(false);
-        btnVague.setDisable(false);
-        btnArcher.setDisable(false);
-        btnCanon.setDisable(false);
-        btnAcheterCase.setDisable(false);
-        btnGlace.setDisable(false);
-        btnRecommencer.setDisable(false);
-        btnPoison.setDisable(false);
-        btnAmeliorer.setDisable(false);
+        definirBoutonsActifOuDesactif(false);
         this.defaiteLance = false;
     }
 

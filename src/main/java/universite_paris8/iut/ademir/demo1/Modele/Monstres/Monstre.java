@@ -15,11 +15,12 @@ import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetPoison;
 
 public class Monstre {
     private int recompense;
-    private int indiceChemin;
+    private DeplacementMonstre deplacement;
     private int degat;
 
     private Effet effetPoison;
     private Effet effetGlace;
+    private ArrayList<Effet> effets;
 
 
 
@@ -49,7 +50,7 @@ public class Monstre {
 
     public Monstre(int pv, double vitesse, double vitesseNormal, int recompense, int degat, ArrayList<Position> chemin) {
         this.recompense = recompense;
-        this.indiceChemin = 0;
+        this.deplacement = new DeplacementMonstre(chemin);
         this.degat = degat;
 
         this.monstreID = "monstre" + compteurID;
@@ -75,73 +76,37 @@ public class Monstre {
         this.monstreID = "monstre" + compteurID;
 
         this.glace = new SimpleBooleanProperty(false);
+
+        // les effets
         this.effetPoison = new EffetPoison();
         this.effetGlace = new EffetGlace();
+        this.effets = new ArrayList<>();
+        this.effets.add(effetPoison);
+        this.effets.add(effetGlace);
 
 
         compteurID++;
     }
 
     public void avancer() {
-        if (effetPoison.isActif()) {
-            effetPoison.appliquer(this);
-        }
-
-        if (effetGlace.isActif()) {
-            effetGlace.appliquer(this);
-        }
-
-        if (!estArrive()) {
-            Position position = chemin.get(indiceChemin);
-            Position posSuivante = chemin.get(indiceChemin + 1);
-            double cibleX = posSuivante.getX() * 64;
-            double cibleY = posSuivante.getY() * 64;
-
-            // si il est a gauche de la cible, on le fait avancer via sa vitesse
-            if (x.get() < cibleX) {
-                x.set(x.get()+this.vitesse);
-
-                if (x.get() > cibleX) {
-                    x.set(cibleX);
-                }
-            } else if (x.get() > cibleX) {
-                x.set( x.get() - this.vitesse);
-
-                if (x.get() < cibleX) {
-                    x.set(cibleX);
-                }
-            }
-
-            if (y.get() > cibleY) {
-                y.set(y.get() - this.vitesse);
-
-                if (y.get() < cibleY) {
-                    y.set(cibleY);
-                }
-            } else if (y.get() < cibleY) {
-                y.set(y.get() + this.vitesse);
-
-                if (y.get() > cibleY) {
-                    y.set(cibleY);
-                }
-            }
-
-
-            if (x.get() == posSuivante.getX() * 64 && y.get() == posSuivante.getY() * 64) {
-                this.indiceChemin++;
+        // ca parcourt tout les effets du monstre aulieu d'ajouter des if pour chaue effet
+        for (Effet effet : effets) {
+            if (effet.isActif()) {
+                effet.appliquer(this);
             }
         }
+
+        deplacement.avancer(this);
     }
 
-
-
     public boolean estArrive() {
-        return this.indiceChemin >= this.chemin.size() - 1;
+        return deplacement.estArrive();
     }
 
     public Position getPosition() {
-        return this.chemin.get(this.indiceChemin);
+        return deplacement.getPosition();
     }
+
 
     public int getPv() {
         return this.pv.intValue();
@@ -268,4 +233,3 @@ public class Monstre {
 
 
 }
-
