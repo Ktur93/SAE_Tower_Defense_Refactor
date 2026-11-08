@@ -4,7 +4,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 
 import java.util.ArrayList;
 
-public class MonstreFactory {
+public class FabriqueMonstre {
 
     public static Monstre creerZombie(ArrayList<Position> chemin){
         return new Zombie(chemin);
@@ -25,6 +25,4 @@ public class MonstreFactory {
     public static Monstre creerBoss(ArrayList<Position> chemin) {
         return new Boss(chemin);
     }
-
-
 }
