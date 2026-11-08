@@ -91,9 +91,7 @@ public class Monstre {
     public void avancer() {
         // ca parcourt tout les effets du monstre aulieu d'ajouter des if pour chaue effet
         for (Effet effet : effets) {
-            if (effet.isActif()) {
-                effet.appliquer(this);
-            }
+            effet.appliquer(this);
         }
 
         deplacement.avancer(this);
@@ -158,7 +156,8 @@ public class Monstre {
     }
 
     public void recevoirDegatsPoison(int degats) {
-        effetPoison.activer();
+        recevoirDegats(degats); // Degats du projectile +
+        effetPoison.activer();  // activation du poison
     }
 
 

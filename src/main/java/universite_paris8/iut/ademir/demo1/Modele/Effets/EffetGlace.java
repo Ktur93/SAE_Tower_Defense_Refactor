@@ -15,17 +15,16 @@ public class EffetGlace extends Effet {
     }
 
     @Override
-    public void appliquer(Monstre monstre) {
-        if (this.actif) {
-            monstre.setVitesse(2);
-            if(this.compteur != 0 && this.compteur%600 == 0){
-                monstre.setGlace(false);
-                monstre.setVitesse(monstre.getVitesseNormal());
-                System.out.println("fin de effet Glace");
-                this.actif = false;
-            }
+    protected void appliquerEffet(Monstre monstre) {
+        monstre.setVitesse(2);
 
-            this.compteur++;
+        if (this.compteur != 0 && this.compteur % 600 == 0) {
+            monstre.setGlace(false);
+            monstre.setVitesse(monstre.getVitesseNormal());
+            System.out.println("fin de effet Glace");
+            this.actif = false;
         }
+
+        this.compteur++;
     }
 }

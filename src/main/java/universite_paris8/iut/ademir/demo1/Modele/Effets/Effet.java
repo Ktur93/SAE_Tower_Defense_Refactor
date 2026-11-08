@@ -25,5 +25,11 @@ public abstract class Effet {
     }
 
     // Chaque effet définit sa propre action donc on met abstarct
-    public abstract void appliquer(Monstre monstre);
+    public void appliquer(Monstre monstre) {
+        if (actif) {
+            appliquerEffet(monstre);
+        }
+    }
+
+    protected abstract void appliquerEffet(Monstre monstre);
 }

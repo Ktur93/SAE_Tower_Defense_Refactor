@@ -23,6 +23,8 @@ public abstract class Tour {
 
     private IntegerProperty nivT;
 
+    private StrategieCiblage strategieCiblage;
+
 
     public Tour(int attaque, int prix, int porter, Position position, long cadence , int nivMax) {
         this.atk = attaque;
@@ -37,25 +39,15 @@ public abstract class Tour {
         this.position = position;
 
         this.nivT = new SimpleIntegerProperty(1);
+
+        this.strategieCiblage = new CiblagePremier();
     }
 
 
     public Projectile attaquer(ObservableList<Monstre> monstres, int compteur) {
 
         if (compteur - dernierTir >= cadence) {
-
-            Monstre cible = null;
-
-            int i = 0;
-            while (i < monstres.size() && cible == null) {
-                Monstre monstre = monstres.get(i);
-
-                if (estAPorter(monstre)) {
-                    cible = monstre;
-                }
-
-                i++;
-            }
+            Monstre cible = strategieCiblage.choisirCible(monstres, this);
 
             if (cible != null) {
                 dernierTir = compteur;
@@ -67,7 +59,7 @@ public abstract class Tour {
     }
 
 
-    private boolean estAPorter(Monstre monstre) {
+    protected boolean estAPorter(Monstre monstre) {
         int x = position.getX() - monstre.getPosition().getX();
         int y = position.getY() - monstre.getPosition().getY();
         int CalculePorter = (x * x + y * y);
@@ -144,4 +136,9 @@ public abstract class Tour {
     public void setNivMax(int nivMax) {
         this.nivMax = nivMax;
     }
+
+    public void setStrategieCiblage(StrategieCiblage strategieCiblage) {
+        this.strategieCiblage = strategieCiblage;
+    }
+
 }

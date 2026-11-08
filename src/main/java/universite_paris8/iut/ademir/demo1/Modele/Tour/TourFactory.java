@@ -3,23 +3,28 @@ package universite_paris8.iut.ademir.demo1.Modele.Tour;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 
 public class TourFactory {
-    public Tour creerTour(String type, Position position) {
+    public Tour creerTour(TypeTour type, Position position) {
         if (type == null) {
             return null;
         }
+
         switch (type) {
-            case "CANON":
+            case CANON:
                 TourCanon tourC = new TourCanon(position);
                 return tourC;
-            case "ARCHER":
+
+            case ARCHER:
                 TourArcher tourA = new TourArcher(position);
                 return tourA;
-            case "GLACE":
+
+            case GLACE:
                 TourGlace tourG = new TourGlace(position);
                 return tourG;
-            case "POISON":
+
+            case POISON:
                 TourPoison tourP = new TourPoison(position);
                 return tourP;
+
             default:
                 return null;
         }

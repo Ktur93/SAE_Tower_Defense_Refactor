@@ -9,13 +9,11 @@ public class EffetPoison extends Effet {
     }
 
     @Override
-    public void appliquer(Monstre monstre) {
-        if (this.actif) {
-            if (this.compteur % 45 == 0) {
-                monstre.recevoirDegats(10);
-            }
-
-            this.compteur++;
+    protected void appliquerEffet(Monstre monstre) {
+        if (this.compteur % 45 == 0) {
+            monstre.recevoirDegats(10);
         }
+
+        this.compteur++;
     }
 }
