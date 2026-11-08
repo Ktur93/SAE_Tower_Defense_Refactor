@@ -1,16 +1,10 @@
 package universite_paris8.iut.ademir.demo1.Modele.Projectile;
 
-import javafx.collections.ObservableList;
-import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 
 public class ProjectilePoison extends Projectile {
-    public ProjectilePoison(double x, double y, int degats, Monstre cible) {
-        super(x, y, 20, degats, cible);
-    }
 
-    @Override
-    public void toucherCible() {
-        cible.recevoirDegatsPoison(degats);
+    public ProjectilePoison(double x, double y, int degats, Monstre cible) {
+        super(x, y, 20, degats, cible, new DegatsPoison(), new DeplacementDirect());
     }
 }

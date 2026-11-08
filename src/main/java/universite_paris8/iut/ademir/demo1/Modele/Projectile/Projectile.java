@@ -5,19 +5,22 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 public abstract class Projectile {
-
+    private StrategieDeplacement strategieDeplacement;
+    private EffetProjectile effet;
     private DoubleProperty xProperty;
     private DoubleProperty yProperty;
     private int vitesse;
     public int degats;
     public Monstre cible;
 
-    public Projectile(double x, double y, int vitesse, int degats, Monstre cible) {
+    public Projectile(double x, double y, int vitesse, int degats, Monstre cible, EffetProjectile effet, StrategieDeplacement strategieDeplacement) {
         this.xProperty = new SimpleDoubleProperty(x);
         this.yProperty = new SimpleDoubleProperty(y);
         this.vitesse = vitesse;
         this.degats = degats;
         this.cible = cible;
+        this.effet = effet;
+        this.strategieDeplacement = strategieDeplacement;
     }
 
     public boolean avancer() {
@@ -38,8 +41,7 @@ public abstract class Projectile {
             return true;
         }
 
-        setX(getX() + vitesse * dx / distance);
-        setY(getY() + vitesse * dy / distance);
+        strategieDeplacement.deplacer(this,dx,dy,distance,vitesse);
 
         return false;
     }
@@ -70,6 +72,6 @@ public abstract class Projectile {
     }
 
     public void toucherCible() {
-        cible.recevoirDegats(degats);
+        effet.appliquer(cible, degats);
     }
 }
