@@ -19,12 +19,22 @@ public class EffetGlace extends Effet {
         monstre.setVitesse(2);
 
         if (this.compteur != 0 && this.compteur % 600 == 0) {
-            monstre.setGlace(false);
-            monstre.setVitesse(monstre.getVitesseNormal());
+            arreter(monstre);
             System.out.println("fin de effet Glace");
-            this.actif = false;
         }
 
-        this.compteur++;
+
+    }
+
+    @Override
+    public void arreter(Monstre monstre) {
+        // Arrête l'effet et remet son compteur à zéro
+        desactiver();
+
+        // Le monstre n'est plus glacé
+        monstre.setGlace(false);
+
+        // Le monstre retrouve sa vitesse normale
+        monstre.setVitesse(monstre.getVitesseNormal());
     }
 }

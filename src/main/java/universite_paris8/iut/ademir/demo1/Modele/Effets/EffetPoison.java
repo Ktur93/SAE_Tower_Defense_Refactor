@@ -13,7 +13,5 @@ public class EffetPoison extends Effet {
         if (this.compteur % 45 == 0) {
             monstre.recevoirDegats(10);
         }
-
-        this.compteur++;
     }
 }

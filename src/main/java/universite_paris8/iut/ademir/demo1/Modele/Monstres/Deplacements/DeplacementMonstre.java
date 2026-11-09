@@ -3,7 +3,7 @@ package universite_paris8.iut.ademir.demo1.Modele.Monstres;
 import java.util.ArrayList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 
-public class DeplacementMonstre {
+public class DeplacementMonstre implements StrategieDeplacement {
     private ArrayList<Position> chemin;
     private int indiceChemin;
 
@@ -58,7 +58,8 @@ public class DeplacementMonstre {
         return indiceChemin >= chemin.size() - 1;
     }
 
-    public Position getPosition() {
+    @Override
+    public Position getPosition(Monstre monstre) {
         return chemin.get(indiceChemin);
     }
 }
