@@ -6,7 +6,5 @@ public class ProjectileFleche extends Projectile {
 
     public ProjectileFleche(double x, double y, int degats, Monstre cible) {
         super(x, y, 20, degats, cible, new DegatsSimples(), new DeplacementDirect());
-
-
     }
 }
