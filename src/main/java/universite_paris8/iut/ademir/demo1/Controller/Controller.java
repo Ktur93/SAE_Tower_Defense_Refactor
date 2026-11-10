@@ -77,70 +77,11 @@ public class Controller implements Initializable {
 
         initialiserPartie();
         initialiserBoutons();
-
-        // Creation de RubisVue
-        rubisVue = new RubisVue(partie, labelRubis);
-        rubisVue.afficherRubis();
-
-        // Creation de MonstreVue
-        MonstreVue monstreVue = new MonstreVue(partie, paneSprites);
-
-        // Creation de ToursVue
-        toursVue = new ToursVue(partie, paneSprites);
-
-        // Creation de ProjectileVue
-        ProjectileVue projectileVue = new ProjectileVue(partie, paneSprites);
-
-        coeurVue = new CoeurVue(partie, paneCoeurs);
-
-        // Initialisation des listeners
+        initialiserVues();
         initialiserListeners();
+        initialiserClicsSouris();
+        initialiserGameLoop();
 
-
-
-        paneCarte.setOnMouseClicked(event -> {
-            Position position = calculerPositionClic(event.getX(), event.getY());
-            gererClicCarte(position);
-        });
-
-
-        paneSprites.setOnMouseClicked(event -> {
-            Position position = calculerPositionClic(event.getX(), event.getY());
-            if(ameliorerTour == true){
-                ameliorerTourCliquee(position);
-            }
-        });
-
-        AnimationTimer gameLoop = new AnimationTimer() {
-
-            long dernierTemps = 0;
-            long ticke = 1_000_000_000 / 60; // 60 ticke
-
-            @Override
-            public void handle(long tempActuel) {
-
-                if (tempActuel - dernierTemps >= ticke) {
-                    partie.mettreAJour();
-                    rubisVue.afficherRubis();
-                    btnAcheterCase.setText("Acheter case - " + partie.getPrixCase());
-                    btnAmeliorer.setText("Amelioration - " + partie.getPrixAmelioration());
-
-                    if (partie.defaiteProperty().get()) {
-                        int tempsDefaite = partie.getCompteur() - partie.getCompteurDefaite();
-
-                        carteVue.timerRecommencer(tempsDefaite);
-
-                        if (tempsDefaite > 175) {
-                            partie.setDefaiteProperty(false);
-                        }
-                    }
-
-                    partie.setCompteurPlusPlus();
-                    dernierTemps = tempActuel;
-                }
-            }
-        };
-        gameLoop.start();
     }
 
     private void initialiserPartie(){
@@ -202,6 +143,76 @@ public class Controller implements Initializable {
         });
     }
 
+    private void initialiserVues() {
+        rubisVue = new RubisVue(partie, labelRubis);
+        rubisVue.afficherRubis();
+
+        MonstreVue monstreVue = new MonstreVue(partie, paneSprites);
+
+        toursVue = new ToursVue(partie, paneSprites);
+
+        ProjectileVue projectileVue = new ProjectileVue(partie, paneSprites);
+
+        coeurVue = new CoeurVue(partie, paneCoeurs);
+    }
+
+    private void initialiserClicsSouris() {
+
+        paneCarte.setOnMouseClicked(event -> {
+            Position position = calculerPositionClic(event.getX(), event.getY());
+            gererClicCarte(position);
+        });
+
+        paneSprites.setOnMouseClicked(event -> {
+            Position position = calculerPositionClic(event.getX(), event.getY());
+
+            if (ameliorerTour) {
+                ameliorerTourCliquee(position);
+            }
+        });
+    }
+
+    private void initialiserGameLoop() {
+
+        AnimationTimer gameLoop = new AnimationTimer() {
+
+            long dernierTemps = 0;
+            long ticke = 1_000_000_000 / 60;
+
+            @Override
+            public void handle(long tempActuel) {
+
+                if (tempActuel - dernierTemps >= ticke) {
+
+                    partie.mettreAJour();
+                    rubisVue.afficherRubis();
+
+                    btnAcheterCase.setText("Acheter case - " + partie.getPrixCase());
+                    btnAmeliorer.setText("Amelioration - " + partie.getPrixAmelioration());
+
+                    if (partie.defaiteProperty().get()) {
+                        int tempsDefaite = partie.getCompteur() - partie.getCompteurDefaite();
+
+                        carteVue.timerRecommencer(tempsDefaite);
+
+                        if (tempsDefaite > 175) {
+                            partie.setDefaiteProperty(false);
+                        }
+                    }
+
+                    partie.setCompteurPlusPlus();
+                    dernierTemps = tempActuel;
+                }
+            }
+        };
+
+        gameLoop.start();
+    }
+
+
+
+
+
     private void acheterCase(Position position) {
         partie.acheterCase(position, carte);
         carteVue.viderCarte();
@@ -250,18 +261,15 @@ public class Controller implements Initializable {
     public void initialiserListeners() {
 
         partie.vagueEnCoursProperty().addListener((obs,old,now) -> {
-                mettreAJourBoutonRecommencer();
-                mettreAJourBoutonVague();
+            mettreAjourBoutonsPartie();
         });
 
         partie.toutesLesVaguesTermineProperty().addListener((obs,old,now) -> {
-            mettreAJourBoutonRecommencer();
-            mettreAJourBoutonVague();
+            mettreAjourBoutonsPartie();
         });
 
         partie.portailMortProperty().addListener((obs,old,now) -> {
-            mettreAJourBoutonRecommencer();
-            mettreAJourBoutonVague();
+            mettreAjourBoutonsPartie();
         });
 
         partie.victoireProperty().addListener((obs,old,now) -> {
@@ -285,6 +293,11 @@ public class Controller implements Initializable {
             }
         });
 
+    }
+
+    private void mettreAjourBoutonsPartie(){
+        mettreAJourBoutonRecommencer();
+        mettreAJourBoutonVague();
     }
 
     public Tour creerTourSelectionnee(String tourSelectionnee, Position position) {
@@ -341,29 +354,23 @@ public class Controller implements Initializable {
     }
 
     public void desactiverToutLesBoutons() {
-        btnRecommencer.setDisable(true);
-        btnVague.setDisable(true);
-        btnArcher.setDisable(true);
-        btnCanon.setDisable(true);
-        btnAcheterCase.setDisable(true);
-        btnGlace.setDisable(true);
-        btnRecommencer.setDisable(true);
-        btnPoison.setDisable(true);
-        btnAmeliorer.setDisable(true);
-        this.defaiteLance = true;
+        changerEtatBoutons(true);
     }
 
     public void activerToutLesBoutons() {
-        btnRecommencer.setDisable(false);
-        btnVague.setDisable(false);
-        btnArcher.setDisable(false);
-        btnCanon.setDisable(false);
-        btnAcheterCase.setDisable(false);
-        btnGlace.setDisable(false);
-        btnRecommencer.setDisable(false);
-        btnPoison.setDisable(false);
-        btnAmeliorer.setDisable(false);
-        this.defaiteLance = false;
+        changerEtatBoutons(false);
+    }
+
+    public void changerEtatBoutons(boolean desactiver){
+        btnRecommencer.setDisable(desactiver);
+        btnVague.setDisable(desactiver);
+        btnArcher.setDisable(desactiver);
+        btnCanon.setDisable(desactiver);
+        btnAcheterCase.setDisable(desactiver);
+        btnGlace.setDisable(desactiver);
+        btnPoison.setDisable(desactiver);
+        btnAmeliorer.setDisable(desactiver);
+        this.defaiteLance = desactiver;
     }
 
 
