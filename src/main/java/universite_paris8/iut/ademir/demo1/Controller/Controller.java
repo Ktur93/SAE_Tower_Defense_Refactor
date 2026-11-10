@@ -12,6 +12,7 @@ import javafx.scene.layout.TilePane;
 import universite_paris8.iut.ademir.demo1.Modele.Algorithmes.BFS;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.GestionnaireTour;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.*;
 import universite_paris8.iut.ademir.demo1.Vue.*;
@@ -66,6 +67,7 @@ public class Controller implements Initializable {
     private boolean defaiteLance;
 
     private CoeurVue coeurVue;
+    private GestionnaireTour gestionnaireTour;
 
 
 
