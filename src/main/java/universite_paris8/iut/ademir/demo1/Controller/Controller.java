@@ -34,11 +34,9 @@ public class Controller implements Initializable {
     private Pane paneCoeurs;
     @FXML
     private Pane paneDecoration;
-
     // Label
     @FXML
     private Label labelRubis;
-
     // Boutons
     @FXML
     private Button btnRecommencer;
@@ -64,8 +62,9 @@ public class Controller implements Initializable {
     private boolean achatCase = false;
     private boolean ameliorerTour = false;
     private boolean defaiteLance;
-
     private CoeurVue coeurVue;
+    private RubisVue rubisVue;
+    private ToursVue toursVue;
 
 
 
@@ -76,145 +75,39 @@ public class Controller implements Initializable {
         this.carteVue = new CarteVue(carte, paneCarte , paneDecoration);
         carteVue.dessinerCarte();
 
-        // Positions
-        Position depart = new Position(0, 7);
-        Position depart2 = new Position(12, 0);
-        Position depart3 = new Position(8, 15);
-        Position arrivee = carte.trouverArrivee();
-
-        // BFS
-        BFS bfs = new BFS(carte, depart);
-        BFS bfs2 = new BFS(carte,depart2);
-        BFS bfs3 = new BFS(carte,depart3);
-
-        // Chemins
-        ArrayList<Position> chemin = bfs.cheminDeSourceVersCible(arrivee);
-        ArrayList<Position> chemin2 = bfs3.cheminDeSourceVersCible(arrivee);
-        ArrayList<Position> chemin3 = bfs2.cheminDeSourceVersCible(arrivee);
-
-
-        // Creation de la partie
-        partie = new Partie(chemin,chemin2,chemin3);
+        initialiserPartie();
+        initialiserBoutons();
 
         // Creation de RubisVue
-        RubisVue rubisVue = new RubisVue(partie, labelRubis);
+        rubisVue = new RubisVue(partie, labelRubis);
         rubisVue.afficherRubis();
-
 
         // Creation de MonstreVue
         MonstreVue monstreVue = new MonstreVue(partie, paneSprites);
 
         // Creation de ToursVue
-        ToursVue T = new ToursVue(partie, paneSprites);
+        toursVue = new ToursVue(partie, paneSprites);
 
         // Creation de ProjectileVue
         ProjectileVue projectileVue = new ProjectileVue(partie, paneSprites);
 
-
-
-
         coeurVue = new CoeurVue(partie, paneCoeurs);
-
 
         // Initialisation des listeners
         initialiserListeners();
 
-        // Bouton pour lancer la vague/lancement du gameLoop/deplacement des monstre:
-        btnVague.setOnAction(actionEvent -> {
-            partie.lancerProchaineVague();
-        });
-
-
-        // Bouton pour recommencer
-        btnRecommencer.setOnAction(actionEvent -> {
-            recommencer();
-        });
-
-
-        // Bouton pour selectionnée les tours via des boutons:
-        btnCanon.setOnAction(actionEvent -> {
-            tourSelectionne = "CANON";
-        });
-
-        btnArcher.setOnAction(actionEvent -> {
-            tourSelectionne = "ARCHER";
-        });
-
-        btnGlace.setOnAction(actionEvent -> {
-            tourSelectionne = "GLACE";
-        });
-
-        btnPoison.setOnAction(actionEvent -> {
-            tourSelectionne = "POISON";
-        });
-
-        btnAcheterCase.setOnAction(actionEvent -> {
-            achatCase = true;
-        });
-
-        btnAmeliorer.setOnAction(actionEvent -> {
-            ameliorerTour = true;
-            // System.out.println("click");
-        });
-
-
 
 
         paneCarte.setOnMouseClicked(event -> {
-            // Sauvegarde de la position ou l'utilisateur a cliqué
-            int colonne = (int) (event.getX() / TAILLE_TUILE);
-            int ligne = (int) (event.getY() / TAILLE_TUILE);
-            Position position = new Position(colonne, ligne);
-
-            // Achete la case si possible
-            if (achatCase) {
-                partie.acheterCase(position , carte);
-                carteVue.viderCarte();
-                carteVue.dessinerCarte();
-                rubisVue.afficherRubis();
-                achatCase = false;
-                return;
-            }
-
-            // Creation de la tour a partir des coordonées
-            Tour tour = creerTourSelectionnee(tourSelectionne, position);
-
-            // Verification de si la carte est placable
-            boolean placeDisponible = partie.placerTour(tour, carte);
-
-            // Si oui on place la tour
-            if (placeDisponible) {
-                rubisVue.afficherRubis();
-                System.out.println("placement");
-            } else {
-                System.out.println("null");
-            }
-
+            Position position = calculerPositionClic(event.getX(), event.getY());
+            gererClicCarte(position);
         });
 
 
         paneSprites.setOnMouseClicked(event -> {
-
-            int colonne = (int) (event.getX() / TAILLE_TUILE);
-            int ligne = (int) (event.getY() / TAILLE_TUILE);
-
-            Position position = new Position(colonne, ligne);
-
+            Position position = calculerPositionClic(event.getX(), event.getY());
             if(ameliorerTour == true){
-                int i = 0;
-                while (i < partie.getTours().size()) {
-                    // System.out.println("envoyer");
-                    Tour tour = partie.getTours().get(i);
-
-                    if (tour.getPosition().equals(position)) {
-                        partie.faireAmeliorerTours(tour);
-                        T.MiseAjourImage(tour);
-                        // System.out.println("envoyer");
-                    }
-
-                    i++;
-                }
-                ameliorerTour = false;
+                ameliorerTourCliquee(position);
             }
         });
 
@@ -248,6 +141,110 @@ public class Controller implements Initializable {
             }
         };
         gameLoop.start();
+    }
+
+    private void initialiserPartie(){
+        // Positions
+        Position depart = new Position(0, 7);
+        Position depart2 = new Position(12, 0);
+        Position depart3 = new Position(8, 15);
+        Position arrivee = carte.trouverArrivee();
+
+        // BFS
+        BFS bfs = new BFS(carte, depart);
+        BFS bfs2 = new BFS(carte,depart2);
+        BFS bfs3 = new BFS(carte,depart3);
+
+        // Chemins
+        ArrayList<Position> chemin = bfs.cheminDeSourceVersCible(arrivee);
+        ArrayList<Position> chemin2 = bfs3.cheminDeSourceVersCible(arrivee);
+        ArrayList<Position> chemin3 = bfs2.cheminDeSourceVersCible(arrivee);
+
+        // Creation de la partie
+        partie = new Partie(chemin,chemin2,chemin3);
+    }
+
+    private void initialiserBoutons(){
+        // Bouton pour lancer la vague/lancement du gameLoop/deplacement des monstre:
+        btnVague.setOnAction(actionEvent -> {
+            partie.lancerProchaineVague();
+        });
+
+        // Bouton pour recommencer
+        btnRecommencer.setOnAction(actionEvent -> {
+            recommencer();
+        });
+
+        // Bouton pour selectionnée les tours via des boutons:
+        btnCanon.setOnAction(actionEvent -> {
+            tourSelectionne = "CANON";
+        });
+
+        btnArcher.setOnAction(actionEvent -> {
+            tourSelectionne = "ARCHER";
+        });
+
+        btnGlace.setOnAction(actionEvent -> {
+            tourSelectionne = "GLACE";
+        });
+
+        btnPoison.setOnAction(actionEvent -> {
+            tourSelectionne = "POISON";
+        });
+
+        btnAcheterCase.setOnAction(actionEvent -> {
+            achatCase = true;
+        });
+
+        btnAmeliorer.setOnAction(actionEvent -> {
+            ameliorerTour = true;
+            // System.out.println("click");
+        });
+    }
+
+    private void acheterCase(Position position) {
+        partie.acheterCase(position, carte);
+        carteVue.viderCarte();
+        carteVue.dessinerCarte();
+        rubisVue.afficherRubis();
+        achatCase = false;
+    }
+
+    private void placerTour(Position position) {
+        Tour tour = creerTourSelectionnee(tourSelectionne, position);
+        boolean placeDisponible = partie.placerTour(tour, carte);
+        if (placeDisponible) {
+            rubisVue.afficherRubis();
+            System.out.println("placement");
+        } else {
+            System.out.println("null");
+        }
+    }
+
+    private void gererClicCarte(Position position) {
+        if (achatCase) {
+            acheterCase(position);
+            return;
+        }
+        placerTour(position);
+    }
+
+    private Position calculerPositionClic(double x, double y){
+        int colonne = (int) (x / TAILLE_TUILE);
+        int ligne = (int) (y / TAILLE_TUILE);
+
+        return new Position(colonne, ligne);
+    }
+
+    private void ameliorerTourCliquee(Position position){
+        for(Tour tour : partie.getTours()){
+            if (tour.getPosition().equals(position)) {
+                partie.faireAmeliorerTours(tour);
+                toursVue.MiseAjourImage(tour);
+            }
+        }
+
+        ameliorerTour = false;
     }
 
     public void initialiserListeners() {
@@ -289,8 +286,6 @@ public class Controller implements Initializable {
         });
 
     }
-
-
 
     public Tour creerTourSelectionnee(String tourSelectionnee, Position position) {
         switch (tourSelectionnee) {
