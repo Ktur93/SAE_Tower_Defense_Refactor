@@ -65,6 +65,35 @@ public class Controller implements Initializable {
     private CoeurVue coeurVue;
     private RubisVue rubisVue;
     private ToursVue toursVue;
+    private StrategieClic strategieClic = new StrategiePlacement();
+
+    private interface StrategieClic {
+        void executer(Position position);
+    }
+
+    private class StrategiePlacement implements StrategieClic {
+
+        @Override
+        public void executer(Position position) {
+            placerTour(position);
+        }
+    }
+
+    private class StrategieAchat implements StrategieClic {
+
+        @Override
+        public void executer(Position position) {
+            acheterCase(position);
+        }
+    }
+
+    private class StrategieAmelioration implements StrategieClic {
+
+        @Override
+        public void executer(Position position) {
+            ameliorerTourCliquee(position);
+        }
+    }
 
 
 
@@ -119,27 +148,42 @@ public class Controller implements Initializable {
         // Bouton pour selectionnée les tours via des boutons:
         btnCanon.setOnAction(actionEvent -> {
             tourSelectionne = "CANON";
+            strategieClic = new StrategiePlacement();
+            achatCase = false;
+            ameliorerTour = false;
         });
 
         btnArcher.setOnAction(actionEvent -> {
             tourSelectionne = "ARCHER";
+            strategieClic = new StrategiePlacement();
+            achatCase = false;
+            ameliorerTour = false;
         });
 
         btnGlace.setOnAction(actionEvent -> {
             tourSelectionne = "GLACE";
+            strategieClic = new StrategiePlacement();
+            achatCase = false;
+            ameliorerTour = false;
         });
 
         btnPoison.setOnAction(actionEvent -> {
             tourSelectionne = "POISON";
+            strategieClic = new StrategiePlacement();
+            achatCase = false;
+            ameliorerTour = false;
         });
 
         btnAcheterCase.setOnAction(actionEvent -> {
             achatCase = true;
+            ameliorerTour = false;
+            strategieClic = new StrategieAchat();
         });
 
         btnAmeliorer.setOnAction(actionEvent -> {
             ameliorerTour = true;
-            // System.out.println("click");
+            achatCase = false;
+            strategieClic = new StrategieAmelioration();
         });
     }
 
@@ -167,7 +211,7 @@ public class Controller implements Initializable {
             Position position = calculerPositionClic(event.getX(), event.getY());
 
             if (ameliorerTour) {
-                ameliorerTourCliquee(position);
+                strategieClic.executer(position);
             }
         });
     }
@@ -219,6 +263,7 @@ public class Controller implements Initializable {
         carteVue.dessinerCarte();
         rubisVue.afficherRubis();
         achatCase = false;
+        strategieClic = new StrategiePlacement();
     }
 
     private void placerTour(Position position) {
@@ -233,11 +278,7 @@ public class Controller implements Initializable {
     }
 
     private void gererClicCarte(Position position) {
-        if (achatCase) {
-            acheterCase(position);
-            return;
-        }
-        placerTour(position);
+        strategieClic.executer(position);
     }
 
     private Position calculerPositionClic(double x, double y){
@@ -256,6 +297,7 @@ public class Controller implements Initializable {
         }
 
         ameliorerTour = false;
+        strategieClic = new StrategiePlacement();
     }
 
     public void initialiserListeners() {
@@ -351,6 +393,10 @@ public class Controller implements Initializable {
         paneSprites.getChildren().clear();
         coeurVue.mettreAJourPvPortail(3);
         btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
+
+        achatCase = false;
+        ameliorerTour = false;
+        strategieClic = new StrategiePlacement();
     }
 
     public void desactiverToutLesBoutons() {
