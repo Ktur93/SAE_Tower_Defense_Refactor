@@ -3,7 +3,8 @@ package universite_paris8.iut.ademir.demo1.Modele.Jeu;
 import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.*;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.MonstresResistants.*;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.Decorateurs.MonstreResistant;
+
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ public class Vague {
     }
 
 
+    //mpd nouveaucode
     public void creeVague1(ArrayList<Position> chemin1) {
         this.monstresVague.clear();
 
@@ -30,9 +32,12 @@ public class Vague {
             monstresVague.add(new Zombie(chemin1));
         }
 
-        monstresVague.add(new ZombieResistant(chemin1));
+        //mpd ancien code
+        //         monstresVague.add(new ZombieResistant(chemin1));
+        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
     }
 
+    //mpd nouveaucode
     public void creeVague2(ArrayList<Position> chemin1, ArrayList<Position> chemin2) {
         this.monstresVague.clear();
 
@@ -41,10 +46,15 @@ public class Vague {
             monstresVague.add(new Araignee(chemin2));
         }
 
-        monstresVague.add(new ZombieResistant(chemin1));
-        monstresVague.add(new AraigneeResistante(chemin2));
+        //mpd ancien code
+        //         monstresVague.add(new ZombieResistant(chemin1));
+
+        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+        //         monstresVague.add(new AraigneeResistante(chemin2));
+        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
     }
 
+    //mpd nouveaucode
     public void creeVague3(ArrayList<Position> chemin1, ArrayList<Position> chemin2) {
         this.monstresVague.clear();
 
@@ -54,11 +64,16 @@ public class Vague {
             monstresVague.add(new Squelette(chemin1));
         }
 
-        monstresVague.add(new ZombieResistant(chemin1));
-        monstresVague.add(new AraigneeResistante(chemin2));
-        monstresVague.add(new SqueletteResistant(chemin1));
+        //mpd ancien code
+        //         monstresVague.add(new ZombieResistant(chemin1));
+        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+        //         monstresVague.add(new AraigneeResistante(chemin2));
+        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
+        //         monstresVague.add(new SqueletteResistant(chemin1));
+        monstresVague.add(new MonstreResistant(new Squelette(chemin1)));
     }
 
+    //mpd nouveaucode
     public void creeVague4(ArrayList<Position> chemin1, ArrayList<Position> chemin2,
                            ArrayList<Position> chemin3) {
         this.monstresVague.clear();
@@ -70,13 +85,20 @@ public class Vague {
             monstresVague.add(new Pillager(chemin2));
         }
 
-        monstresVague.add(new ZombieResistant(chemin1));
-        monstresVague.add(new AraigneeResistante(chemin2));
-        monstresVague.add(new SqueletteResistant(chemin3));
-        monstresVague.add(new PillagerResistant(chemin2));
-        monstresVague.add(new ChauveSourisResistante(chemin1));
+        //mpd ancien code
+        //         monstresVague.add(new ZombieResistant(chemin1));
+        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+        //         monstresVague.add(new AraigneeResistante(chemin2));
+        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
+        //         monstresVague.add(new SqueletteResistant(chemin3));
+        monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
+        //         monstresVague.add(new PillagerResistant(chemin2));
+        monstresVague.add(new MonstreResistant(new Pillager(chemin2)));
+        //         monstresVague.add(new ChauveSourisResistante(chemin1));
+        monstresVague.add(new MonstreResistant(new ChauveSouris(chemin1)));
     }
 
+    //mpd nouveaucode
     public void creeVague5(ArrayList<Position> chemin1, ArrayList<Position> chemin2,
                            ArrayList<Position> chemin3) {
         this.monstresVague.clear();
@@ -88,15 +110,24 @@ public class Vague {
             monstresVague.add(new Pillager(chemin3));
         }
 
-        monstresVague.add(new ZombieResistant(chemin1));
-        monstresVague.add(new AraigneeResistante(chemin2));
-        monstresVague.add(new SqueletteResistant(chemin3));
-        monstresVague.add(new PillagerResistant(chemin3));
+        //mpd ancien code
+        //         monstresVague.add(new ZombieResistant(chemin1));
+        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+        //         monstresVague.add(new AraigneeResistante(chemin2));
+        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
+        //         monstresVague.add(new SqueletteResistant(chemin3));
+        monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
+        //         monstresVague.add(new PillagerResistant(chemin3));
+        monstresVague.add(new MonstreResistant(new Pillager(chemin3)));
 
-        monstresVague.add(new ZombieResistant(chemin1));
-        monstresVague.add(new AraigneeResistante(chemin2));
-        monstresVague.add(new SqueletteResistant(chemin3));
-        monstresVague.add(new PillagerResistant(chemin3));
+        //         monstresVague.add(new ZombieResistant(chemin1));
+        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+        //         monstresVague.add(new AraigneeResistante(chemin2));
+        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
+        //         monstresVague.add(new SqueletteResistant(chemin3));
+        monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
+        //         monstresVague.add(new PillagerResistant(chemin3));
+        monstresVague.add(new MonstreResistant(new Pillager(chemin3)));
 
         monstresVague.add(new Boss(chemin1));
     }

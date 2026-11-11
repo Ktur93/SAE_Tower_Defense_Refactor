@@ -1,5 +1,7 @@
 package universite_paris8.iut.ademir.demo1.Vue;
 
+import java.net.URL;
+
 import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,9 +11,6 @@ import universite_paris8.iut.ademir.demo1.Main;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.*;
 import javafx.scene.shape.Rectangle;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.MonstresRapides.*;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.MonstresResistants.*;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.MonstresSoigneurs.*;
 
 public class MonstreVue {
 
@@ -114,171 +113,70 @@ public class MonstreVue {
     }
 
 
-    private Image imageMonstreEnFeu(Monstre monstre) {
-        Image image = null;
-        if (monstre instanceof ZombieRapide) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/zombieRapideFeu.png"));
-        } else if (monstre instanceof AraigneeRapide) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeRapideFeu.png"));
-        } else if (monstre instanceof SqueletteRapide) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteRapideFeu.png"));
-        } else if (monstre instanceof PillagerRapide) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerRapideFeu.png"));
-        } else if (monstre instanceof ChauveSourisRapide) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisRapideFeu.png"));
-        } else if (monstre instanceof ZombieSoigneur) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/zombieSoigneurFeu.png"));
-        } else if (monstre instanceof AraigneeSoigneuse) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeSoigneuseFeu.png"));
-        } else if (monstre instanceof SqueletteSoigneur) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteSoigneurFeu.png"));
-        } else if (monstre instanceof PillagerSoigneur) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerSoigneurFeu.png"));
-        } else if (monstre instanceof ChauveSourisSoigneuse) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisSoigneuseFeu.png"));
-        } else if (monstre instanceof ZombieResistant) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/zombieResistantFeu.png"));
-        } else if (monstre instanceof AraigneeResistante) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeResistanteFeu.png"));
-        } else if (monstre instanceof SqueletteResistant) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteResistantFeu.png"));
-        } else if (monstre instanceof PillagerResistant) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerResistantFeu.png"));
-        } else if (monstre instanceof ChauveSourisResistante) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisResistanteFeu.png"));
-        } else if (monstre instanceof Zombie) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/zombieFeu.png"));
-        } else if (monstre instanceof Araignee) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeFeu.png"));
-        } else if (monstre instanceof Squelette) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteFeu.png"));
-        } else if (monstre instanceof Pillager) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerFeu.png"));
-        } else if (monstre instanceof Boss) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/bossFeu.png"));
-        } else if (monstre instanceof ChauveSouris) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisFeu.png"));
+
+    // Choisit l espece reelle, la variante exterieure et l etat feu/gel.
+    //mpd nouveaucode
+    public Image imageMonstre(Monstre monstre) {
+        String espece = getNomEspece(monstre.getMonstreDeBase());
+        if (espece == null) {
+            System.out.printf("Image introuvable : espece de monstre inconnue.%n");
+            return null;
         }
-        return image;
+        String variante = getNomVariante(espece, monstre.getVariante());
+        String chemin = getCheminImage(espece, variante, getNomEtat(monstre));
+        URL ressource = Main.class.getResource(chemin);
+
+        if (ressource == null) {
+            System.out.printf("Image absente : %s ; utilisation de l image normale.%n", chemin);
+            chemin = getCheminImage(espece, "", "");
+            ressource = Main.class.getResource(chemin);
+        }
+        if (ressource == null) {
+            System.out.printf("Image de remplacement absente : %s%n", chemin);
+            return null;
+        }
+        return new Image(ressource.toExternalForm());
     }
 
-    public Image imageMonstre(Monstre monstre) {
+    //mpd nouveaucode
+    private String getNomEspece(Monstre monstre) {
+        if (monstre instanceof Zombie) return "zombie";
+        if (monstre instanceof Araignee) return "araignee";
+        if (monstre instanceof Squelette) return "squelette";
+        if (monstre instanceof Pillager) return "pillager";
+        if (monstre instanceof ChauveSouris) return "chauveSouris";
+        if (monstre instanceof Boss) return "boss";
+        return null;
+    }
 
-        if (monstre.estEnFeu()) {
-            return imageMonstreEnFeu(monstre);
+    //mpd nouveaucode
+    private String getNomVariante(String espece, VarianteMonstre variante) {
+        boolean feminin = espece.equals("araignee") || espece.equals("chauveSouris");
+        switch (variante) {
+            case RAPIDE: return "Rapide";
+            case RESISTANT: return feminin ? "Resistante" : "Resistant";
+            case SOIGNEUR: return feminin ? "Soigneuse" : "Soigneur";
+            default: return "";
         }
+    }
 
-        Image image = null;
+    //mpd nouveaucode
+    private String getNomEtat(Monstre monstre) {
+        if (monstre.estEnFeu()) return "Feu";
+        if (monstre.estGlace()) return "Glace";
+        return "";
+    }
 
-
-        if (monstre instanceof ZombieRapide) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombieRapideGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombieRapide.png"));
+    //mpd nouveaucode
+    private String getCheminImage(String espece, String variante, String etat) {
+        String nom = espece;
+        if (espece.equals("chauveSouris")) {
+            boolean imageNormale = variante.isEmpty() && !etat.equals("Feu");
+            boolean imageResistante = variante.equals("Resistante") && etat.isEmpty();
+            if (imageNormale || imageResistante) {
+                nom = "ChauveSouris";
             }
-        } else if (monstre instanceof AraigneeRapide) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araigneeRapideGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araigneeRapide.png"));
-            }
-        } else if (monstre instanceof SqueletteRapide) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squeletteRapideGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squeletteRapide.png"));
-            }
-        } else if (monstre instanceof PillagerRapide) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillagerRapideGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillagerRapide.png"));
-            }
-        } else if (monstre instanceof ChauveSourisRapide) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisRapideGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisRapide.png"));
-            }
-        } else if (monstre instanceof ZombieSoigneur) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombieSoigneurGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombieSoigneur.png"));
-            }
-        } else if (monstre instanceof AraigneeSoigneuse) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araigneeSoigneuseGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araigneeSoigneuse.png"));
-            }
-        } else if (monstre instanceof SqueletteSoigneur) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squeletteSoigneurGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squeletteSoigneur.png"));
-            }
-        } else if (monstre instanceof PillagerSoigneur) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillagerSoigneurGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillagerSoigneur.png"));
-            }
-        } else if (monstre instanceof ChauveSourisSoigneuse) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisSoigneuseGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisSoigneuse.png"));
-            }
-        } else if (monstre instanceof ZombieResistant) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/zombieResistant.png"));
-        } else if (monstre instanceof AraigneeResistante) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeResistante.png"));
-        } else if (monstre instanceof SqueletteResistant) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteResistant.png"));
-        } else if (monstre instanceof PillagerResistant) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerResistant.png"));
-        } else if (monstre instanceof ChauveSourisResistante) {
-            image = new Image(Main.class.getResourceAsStream("Monstres/ChauveSourisResistante.png"));
-        } else if (monstre instanceof Zombie) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombieGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombie.png"));
-            }
-        } else if (monstre instanceof Araignee) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araigneeGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araignee.png"));
-            }
-        } else if (monstre instanceof Squelette) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squeletteGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squelette.png"));
-            }
-        } else if (monstre instanceof Pillager) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillagerGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillager.png"));
-            }
-        } else if (monstre instanceof Boss) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/bossGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/boss.png"));
-            }
-        } else if (monstre instanceof ChauveSouris) {
-            if (monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/ChauveSourisGlace.png"));
-            } else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/ChauveSouris.png"));
-            }
-
         }
-        return image;
+        return "Monstres/" + nom + variante + etat + ".png";
     }
 }
