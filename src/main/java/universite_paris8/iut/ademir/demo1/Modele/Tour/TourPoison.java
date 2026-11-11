@@ -4,11 +4,14 @@ import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.ProjectilePoison;
+import universite_paris8.iut.ademir.demo1.Modele.Tour.Ciblage.CiblagePlusFaible;
 
 public class TourPoison extends Tour{
 
     public TourPoison(Position position){
         super(30, 200, 4, position,50  , 2); // 0,5 seconde
+
+        this.setStrategieCiblage(new CiblagePlusFaible());
     }
 
     @Override

@@ -1,4 +1,3 @@
-
 package universite_paris8.iut.ademir.demo1.Modele.Jeu;
 
 import javafx.collections.ObservableList;
@@ -17,6 +16,13 @@ public class GestionnaireMonstre {
                 partie.recevoirDegatPortail(monstre.getDegat());
                 monstre.setRecompense(0);
                 monstre.setPv(0);
+            }
+        }
+
+        // Une fois les monstres deplaces, on fait leurs actions s'ils en ont
+        for (Monstre monstre : monstres) {
+            if (!monstre.estMort()) {
+                monstre.agir(monstres);
             }
         }
     }

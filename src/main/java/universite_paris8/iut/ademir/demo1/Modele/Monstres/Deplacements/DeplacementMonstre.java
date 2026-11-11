@@ -1,7 +1,8 @@
-package universite_paris8.iut.ademir.demo1.Modele.Monstres;
+package universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements;
 
 import java.util.ArrayList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 
 public class DeplacementMonstre implements StrategieDeplacement {
     private ArrayList<Position> chemin;

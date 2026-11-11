@@ -15,4 +15,9 @@ public class AraigneeResistante extends Araignee {
         // L'araignée reçoit les dégâts du projectile.
         recevoirDegats(degats);
     }
+
+    @Override
+    public void recevoirDegatsGlace(int degats) {
+        recevoirDegats(degats);
+    }
 }
