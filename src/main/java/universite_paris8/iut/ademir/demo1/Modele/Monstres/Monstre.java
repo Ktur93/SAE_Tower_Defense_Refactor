@@ -9,11 +9,9 @@ import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.StrategieDeplacement;
 public interface Monstre {
 
-    void avancer();
 
     void avancer(Monstre monstreActif);
 
-    boolean estArrive();
 
     Position getPosition();
 
@@ -31,15 +29,12 @@ public interface Monstre {
 
     int getDegat();
 
-    boolean getMonstreGlacee();
 
     double getVitesseNormal();
 
     void recevoirDegats(int degats);
 
     void recevoirDegatsGlace(int degats);
-
-    void recevoirDegatsFeu(int degats);
 
     void recevoirDegatsFeu(int degats, Monstre monstreActif);
 

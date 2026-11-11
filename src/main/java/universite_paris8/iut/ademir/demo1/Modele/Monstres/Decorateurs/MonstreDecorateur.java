@@ -20,10 +20,6 @@ public abstract class MonstreDecorateur implements Monstre {
         this.monstreDecore = monstreDecore;
     }
 
-    @Override
-    public void avancer() {
-        monstreDecore.avancer(this);
-    }
 
     @Override
     public void avancer(Monstre monstreActif) {
@@ -35,10 +31,6 @@ public abstract class MonstreDecorateur implements Monstre {
         monstreDecore.setDeplacement(deplacement);
     }
 
-    @Override
-    public boolean estArrive() {
-        return monstreDecore.estArrive();
-    }
 
     @Override
     public boolean estADestination() {
@@ -179,11 +171,6 @@ public abstract class MonstreDecorateur implements Monstre {
     }
 
 
-    @Override
-    public void recevoirDegatsFeu(int degats) {
-        monstreDecore.recevoirDegatsFeu(degats, this);
-    }
-
 
     @Override
     public void recevoirDegatsFeu(int degats, Monstre monstreActif) {
@@ -197,10 +184,6 @@ public abstract class MonstreDecorateur implements Monstre {
     }
 
 
-    @Override
-    public boolean getMonstreGlacee() {
-        return monstreDecore.getMonstreGlacee();
-    }
 
 
     @Override

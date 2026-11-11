@@ -70,7 +70,7 @@ public class MonstreTest {
         double xAvant = zombie.getX();
 
         // On le fait avancer
-        zombie.avancer();
+        zombie.avancer(zombie);
 
         // Sa position X doit augmenter
         assertTrue(zombie.getX() > xAvant);
@@ -83,7 +83,7 @@ public class MonstreTest {
 
         // On le fait avancer plusieurs fois pour atteindre la fin
         for (int i = 0; i < 10; i++) {
-            zombie.avancer();
+            zombie.avancer(zombie);
         }
 
         // Il doit etre a destination

@@ -57,15 +57,12 @@ public abstract class MonstreBase implements Monstre {
 
 
 
-    protected MonstreBase(int pv, double vitesse, double vitesseNormal, int recompense, int degat, ArrayList<Position> chemin) {
+    public MonstreBase(int pv, double vitesse, double vitesseNormal, int recompense, int degat, ArrayList<Position> chemin) {
         this.recompense = recompense;
         this.deplacement = new DeplacementMonstre(chemin);
         this.degat = degat;
 
         this.monstreID = "monstre" + compteurID;
-
-
-
 
 
         this.vitesse = vitesse;
@@ -102,9 +99,6 @@ public abstract class MonstreBase implements Monstre {
 
 
 
-    public void avancer() {
-        avancer(this);
-    }
 
 
     public void avancer(Monstre monstreActif) {
@@ -117,9 +111,6 @@ public abstract class MonstreBase implements Monstre {
 
 
 
-    public boolean estArrive() {
-        return deplacement.estArrive();
-    }
 
     public Position getPosition() {
         return deplacement.getPosition(this);
@@ -154,9 +145,6 @@ public abstract class MonstreBase implements Monstre {
         return this.degat;
     }
 
-    public boolean getMonstreGlacee() {
-        return this.estGlace();
-    }
 
 
     public double getVitesseNormal() {
@@ -166,15 +154,10 @@ public abstract class MonstreBase implements Monstre {
 
 
 
-
-
-
-    // Conserve la gestion des degats et effets de l ancienne implementation.
     public void recevoirDegats(int degats) {
         pv.setValue(getPv() - degats);
     }
 
-    // Conserve la gestion des degats et effets de l ancienne implementation.
     public void recevoirDegatsGlace(int degats) {
         recevoirDegats(degats);
         if (!estEnFeu()) {
@@ -184,14 +167,9 @@ public abstract class MonstreBase implements Monstre {
     }
 
 
-    // Conserve l appel existant et transmet le monstre actif a la gestion du feu.
-    // Conserve la gestion des degats et effets de l ancienne implementation.
-    public void recevoirDegatsFeu(int degats) {
-        recevoirDegatsFeu(degats, this);
-    }
 
-    // Le feu arrete le gel en restaurant la vitesse du monstre decore.
-    // Conserve la gestion des degats et effets de l ancienne implementation.
+
+
     public void recevoirDegatsFeu(int degats, Monstre monstreActif) {
         monstreActif.recevoirDegats(degats);
 
@@ -204,128 +182,103 @@ public abstract class MonstreBase implements Monstre {
     }
 
 
-    // Conserve la gestion des degats et effets de l ancienne implementation.
     public void recevoirDegatsPoison(int degats) {
         recevoirDegats(degats); // Degats du projectile +
         effetPoison.activer();  // activation du poison
     }
 
 
-    // Expose les donnees du monstre de base via le contrat Monstre.
     public double getX () {
         return this.x.doubleValue();
     }
 
-    // Expose les donnees du monstre de base via le contrat Monstre.
     public double getY() {
         return this.y.doubleValue();
     }
 
-    // Met a jour l etat du monstre de base, utilise par toutes ses enveloppes.
     public void setX (double newX) {
         this.x.setValue(newX);
     }
 
-    // Met a jour l etat du monstre de base, utilise par toutes ses enveloppes.
     public void setY (double newY) {
         this.y.setValue(newY);
     }
 
-    // Met a jour l etat du monstre de base, utilise par toutes ses enveloppes.
     public void setRecompense(int recompense) {
         this.recompense = recompense;
     }
 
-    // Expose la propriete JavaFX reelle pour les liaisons de la vue.
     public DoubleProperty xProperty() {
         return x;
     }
 
-    // Expose la propriete JavaFX reelle pour les liaisons de la vue.
     public DoubleProperty yProperty() {
         return y;
     }
 
-    // Expose la propriete JavaFX reelle pour les liaisons de la vue.
     public IntegerProperty pvProperty(){
         return pv;
     }
 
-    // Expose les donnees du monstre de base via le contrat Monstre.
     public int getPvMax() {
         return pvMax;
     }
 
-    // Expose les donnees du monstre de base via le contrat Monstre.
     public String getMonstreID() {
         return monstreID;
     }
 
-    // Expose les donnees du monstre de base via le contrat Monstre.
     public double getDernierePositionX() {
         return this.chemin.get(this.chemin.size() - 1).getX();
     }
 
-    // Expose les donnees du monstre de base via le contrat Monstre.
     public double getDernierePositionY(){
         return this.chemin.get(this.chemin.size() - 1).getY();
     }
 
-    // Calcule cet etat a partir des donnees reelles du monstre.
     public boolean estMort() {
         return this.pv.intValue() <= 0;
     }
 
-    // Calcule cet etat a partir des donnees reelles du monstre.
     public boolean estADestination() {
         return deplacement.estArrive();
     }
 
-    // Expose la propriete JavaFX reelle pour les liaisons de la vue.
     public BooleanProperty feuProperty() {
         return feu;
     }
 
-    // Calcule cet etat a partir des donnees reelles du monstre.
     public boolean estEnFeu() {
         return feu.get();
     }
 
-    // Met a jour l etat du monstre de base, utilise par toutes ses enveloppes.
     public void setFeu(boolean enFeu) {
         feu.set(enFeu);
     }
 
-    // Expose la propriete JavaFX reelle pour les liaisons de la vue.
     public BooleanProperty glaceProperty() {
         return glace;
     }
 
-    // Calcule cet etat a partir des donnees reelles du monstre.
     public boolean estGlace() {
         return glace.get();
     }
 
-    // Met a jour l etat du monstre de base, utilise par toutes ses enveloppes.
     public void setGlace(boolean estGlaceOuPas) {
         glace.set(estGlaceOuPas);
     }
 
-    // Action par defaut sans capacite speciale ; les decorateurs l enrichissent.
     public void agir(ObservableList<Monstre> monstres) {
         // de base, un monstre n'a pas d'action particulière ca va se repercuter sur les extends.
     }
 
 
 
-    // Identifie le meme monstre a travers les couches de decorateurs.
-    // Expose les donnees du monstre de base via le contrat Monstre.
+
     public Monstre getMonstreDeBase() {
         return this;
     }
 
-    // Un monstre sans decorateur utilise son apparence normale.
-    // Expose les donnees du monstre de base via le contrat Monstre.
     public VarianteMonstre getVariante() {
         return VarianteMonstre.NORMALE;
     }

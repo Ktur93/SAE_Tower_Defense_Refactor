@@ -19,7 +19,10 @@ public class GestionnaireTour {
         this.prixAmelioration = 75;
     }
 
-    public boolean placerTour(Tour tour, Carte carte, Partie partie) {
+    //CSP ancien code
+    // public boolean placerTour(Tour tour, Carte carte, Partie partie) {
+    //CSP nouveau code
+    public boolean placerTour(Tour tour, Partie partie) {
 
         if (tour == null) {
             return false;
@@ -27,7 +30,9 @@ public class GestionnaireTour {
 
         Position position = tour.getPosition();
 
-        if (!carte.estCaseTour(position.getX(), position.getY())) {
+        //CSP ancien code
+        // if (!carte.estCaseTour(position.getX(), position.getY())) {
+        if (!Carte.getInstance().estCaseTour(position.getX(), position.getY())) {
             return false;
         }
 

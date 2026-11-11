@@ -1,5 +1,6 @@
 package universite_paris8.iut.ademir.demo1.Tests;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
@@ -11,6 +12,11 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PartieTest {
+
+    @BeforeEach
+    public void preparerCarte() {
+        Carte.getInstance().caseBloquer();
+    }
 
     public ArrayList<Position> creerPetitChemin() {
         // Petit chemin utilise pour creer une partie simple
@@ -124,20 +130,20 @@ public class PartieTest {
     public void placerTourSurCaseNonTourRetourneFalse() {
         // On cree une partie et une carte
         Partie partie = creerPartieSimple();
-        Carte carte = new Carte();
+        Carte carte = Carte.getInstance();
 
         // La position 0,0 n est pas une case tour
         TourCanon tour = new TourCanon(new Position(0, 0));
 
         // Le placement doit echouer
-        assertFalse(partie.placerTour(tour, carte));
+        assertFalse(partie.placerTour(tour));
     }
 
     @Test
     public void placerTourSurCaseDebloqueeRetourneTrue() {
         // On cree une partie et une carte
         Partie partie = creerPartieSimple();
-        Carte carte = new Carte();
+        Carte carte = Carte.getInstance();
 
         // On debloque une case achetable
         Position position = new Position(14, 2);
@@ -147,7 +153,18 @@ public class PartieTest {
         TourCanon tour = new TourCanon(position);
 
         // Le placement doit reussir
-        assertTrue(partie.placerTour(tour, carte));
+        assertTrue(partie.placerTour(tour));
         assertEquals(1, partie.getTours().size());
+    }
+    @Test
+    public void acheterCaseUtiliseLaCartePartageeEtDebiteLesRubis() {
+        Partie partie = creerPartieSimple();
+        Carte carte = Carte.getInstance();
+
+        partie.acheterCase(new Position(14, 2));
+
+        assertTrue(carte.estCaseTour(14, 2));
+        assertEquals(375, partie.getRubis());
+        assertEquals(50, partie.getPrixCase());
     }
 }

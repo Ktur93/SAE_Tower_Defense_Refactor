@@ -1,4 +1,3 @@
-//mpd ancien code
 // package universite_paris8.iut.ademir.demo1.Modele.Monstres.MonstresSoigneurs;
 //
 // import java.util.ArrayList;

@@ -121,17 +121,27 @@ public class Partie {
         gestionnaireMonstres.supprimerMonstresMorts(monstres, this);
     }
 
-    public void acheterCase(Position position, Carte carte) {
+    //CSP ancien code
+    // public void acheterCase(Position position, Carte carte) {
+    //CSP nouveau code
+    public void acheterCase(Position position) {
         if (getRubis() >= prixCase) {
-            if (carte.caseDebloquer(position)) {
+            //CSP ancien code
+            // if (carte.caseDebloquer(position)) {
+            if (Carte.getInstance().caseDebloquer(position)) {
                 retirerRubis(prixCase);
                 prixCase += 25;
             }
         }
     }
 
-    public boolean placerTour(Tour tour, Carte carte) {
-        return gestionnaireTours.placerTour(tour, carte, this);
+    //CSP ancien code
+    // public boolean placerTour(Tour tour, Carte carte) {
+    //     return gestionnaireTours.placerTour(tour, carte, this);
+    // }
+    //CSP nouveau code
+    public boolean placerTour(Tour tour) {
+        return gestionnaireTours.placerTour(tour, this);
     }
 
     public void faireAttaquerTours(int compteur) {
@@ -226,9 +236,6 @@ public class Partie {
         return gestionnaireVagues.getIndiceVaguePlusUn();
     }
 
-    public void setIndiceVaguePlusUn(int i) {
-        gestionnaireVagues.setIndiceVague(i);
-    }
 
     public void setIndiceVague(int i) {
         gestionnaireVagues.setIndiceVague(i);

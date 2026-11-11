@@ -1,5 +1,6 @@
 package universite_paris8.iut.ademir.demo1.Tests;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
@@ -8,10 +9,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CarteTest {
 
+    @BeforeEach
+    public void preparerCarte() {
+        Carte.getInstance().caseBloquer();
+    }
+
     @Test
     public void caseHorsCarteNestPasMarchable() {
-        // On cree une carte
-        Carte carte = new Carte();
+        // On recupere la carte partagee
+        Carte carte = Carte.getInstance();
 
         // Les cases hors limite ne doivent pas etre marchable
         assertFalse(carte.estMarchable(-1, 0));
@@ -22,8 +28,8 @@ public class CarteTest {
 
     @Test
     public void caseDeDepartEstMarchable() {
-        // On cree une carte
-        Carte carte = new Carte();
+        // On recupere la carte partagee
+        Carte carte = Carte.getInstance();
 
         // La case de depart de la premiere entree doit etre marchable
         assertTrue(carte.estMarchable(0, 7));
@@ -31,8 +37,8 @@ public class CarteTest {
 
     @Test
     public void caseVideNestPasMarchable() {
-        // On cree une carte
-        Carte carte = new Carte();
+        // On recupere la carte partagee
+        Carte carte = Carte.getInstance();
 
         // Une case vide ne doit pas etre marchable
         assertFalse(carte.estMarchable(0, 0));
@@ -40,8 +46,8 @@ public class CarteTest {
 
     @Test
     public void trouverArriveeRetourneUnePosition() {
-        // On cree une carte
-        Carte carte = new Carte();
+        // On recupere la carte partagee
+        Carte carte = Carte.getInstance();
 
         // On recupere la position d arrivee
         Position arrivee = carte.trouverArrivee();
@@ -52,8 +58,8 @@ public class CarteTest {
 
     @Test
     public void caseDebloquerTransformeUneCaseAchetable() {
-        // On cree une carte
-        Carte carte = new Carte();
+        // On recupere la carte partagee
+        Carte carte = Carte.getInstance();
 
         // La case 14,2 = 20 dans la carte, donc elle est achetable
         Position position = new Position(14, 2);
@@ -71,8 +77,8 @@ public class CarteTest {
 
     @Test
     public void caseBloquerRebloqueLesCasesAchetees() {
-        // On cree une carte
-        Carte carte = new Carte();
+        // On recupere la carte partagee
+        Carte carte = Carte.getInstance();
 
         // On debloque une case achetable
         Position position = new Position(14, 2);
@@ -86,5 +92,19 @@ public class CarteTest {
 
         // La case ne doit plus etre une case tour
         assertFalse(carte.estCaseTour(14, 2));
+    }
+    @Test
+    public void getInstanceRetourneToujoursLaMemeCarte() {
+        assertSame(Carte.getInstance(), Carte.getInstance());
+    }
+
+    @Test
+    public void modificationsSontPartageesEntreLesAcces() {
+        Carte premiere = Carte.getInstance();
+        Carte seconde = Carte.getInstance();
+
+        assertFalse(seconde.estCaseTour(14, 2));
+        assertTrue(premiere.caseDebloquer(new Position(14, 2)));
+        assertTrue(seconde.estCaseTour(14, 2));
     }
 }

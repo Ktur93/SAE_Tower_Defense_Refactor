@@ -114,9 +114,12 @@ public class Controller implements Initializable {
         }
     }
 
+    //CSP nouveau code
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        carte = new Carte();
+        //CSP ancien code
+        // carte = new Carte();
+        carte = Carte.getInstance();
         this.carteVue = new CarteVue(carte, paneCarte, paneDecoration);
         carteVue.dessinerCarte();
 
@@ -260,8 +263,11 @@ public class Controller implements Initializable {
         gameLoop.start();
     }
 
+    //CSP nouveau code
     private void acheterCase(Position position) {
-        partie.acheterCase(position, carte);
+        //CSP ancien code
+        // partie.acheterCase(position, carte);
+        partie.acheterCase(position);
         carteVue.viderCarte();
         carteVue.dessinerCarte();
         rubisVue.afficherRubis();
@@ -269,9 +275,12 @@ public class Controller implements Initializable {
         strategieClic = new StrategiePlacement();
     }
 
+    //CSP nouveau code
     private void placerTour(Position position) {
         Tour tour = creerTourSelectionnee(tourSelectionne, position);
-        boolean placeDisponible = partie.placerTour(tour, carte);
+        //CSP ancien code
+        // boolean placeDisponible = partie.placerTour(tour, carte);
+        boolean placeDisponible = partie.placerTour(tour);
         if (placeDisponible) {
             rubisVue.afficherRubis();
             System.out.println("placement");
