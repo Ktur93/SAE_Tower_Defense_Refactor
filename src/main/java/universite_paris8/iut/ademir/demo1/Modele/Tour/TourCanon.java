@@ -18,9 +18,8 @@ public class TourCanon extends Tour {
         this.setCadence(this.getCadence() -1);
     }
 
-    public Projectile creerProjectile(Monstre cible) {
-        double x = getPosition().getX() * 64;
-        double y = getPosition().getY() * 64;
+    @Override
+    protected Projectile nouveauProjectile(double x, double y, Monstre cible) {
         return new ProjectileBoulet(x, y, getAtk(),cible);
     }
 }

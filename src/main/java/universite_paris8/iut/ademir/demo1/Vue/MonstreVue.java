@@ -31,16 +31,22 @@ public class MonstreVue {
 
     ListChangeListener<Monstre> listener = new ListChangeListener<Monstre>() {
 
+        @Override
         public void onChanged(Change<? extends Monstre> c) {
-
             while (c.next()) {
 
                 if (c.wasAdded()) {
-                    creerSprite(c.getAddedSubList().get(0));
+                    // Cree l'affichage de chaque monstre ajoute et dans le for each il ya un array list de tout les monstres ajouté
+                    for (Monstre monstre : c.getAddedSubList()) {
+                        creerSprite(monstre);
+                    }
                 }
 
                 if (c.wasRemoved()) {
-                    supprimerAffichageMonstre(c.getRemoved().get(0));
+                    // Retirer l'affichage de chaque monstre supprime et dans le for each il ya un array list de tout les monstres supprimé
+                    for (Monstre monstre : c.getRemoved()) {
+                        supprimerAffichageMonstre(monstre);
+                    }
                 }
             }
         }

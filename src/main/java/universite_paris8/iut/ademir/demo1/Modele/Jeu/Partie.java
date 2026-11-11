@@ -16,8 +16,6 @@ import java.util.ArrayList;
 
 public class Partie {
 
-    private final static int TAILLE_VAGUE = 5;
-
     private ObservableList<Tour> tours;
     private ObservableList<Monstre> monstres;
     private ObservableList<Projectile> projectiles;
@@ -220,6 +218,8 @@ public class Partie {
 
 
     public void creeVagues() {
+        this.vagues.clear();
+
         Vague vague1 = new Vague();
         vague1.creeVague1(chemin);
 
@@ -263,33 +263,7 @@ public class Partie {
 
         // recreation des vagues
         // recreation des vagues
-        vagues.get(0).creeVague1(this.chemin);
-
-        vagues.get(1).creeVague2(
-                this.chemin,
-                this.chemin2
-        );
-
-        vagues.get(2).creeVague3(
-                this.chemin,
-                this.chemin2
-        );
-
-        vagues.get(3).creeVague4(
-                this.chemin,
-                this.chemin2,
-                this.chemin3
-        );
-
-        vagues.get(4).creeVague5(
-                this.chemin,
-                this.chemin2,
-                this.chemin3
-        );
-
-        for (int i = 0; i < TAILLE_VAGUE;i++){
-            vagues.get(i).setIndiceMonstreZero();
-        }
+        creeVagues();
 
         tours.clear();
     }

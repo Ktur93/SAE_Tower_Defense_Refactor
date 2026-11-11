@@ -60,7 +60,12 @@ public class Controller implements Initializable {
     private Carte carte;
     private Partie partie;
     private CarteVue carteVue;
-    private String tourSelectionne;
+
+    // private String tourSelectionne;
+    // ali : je met un enum ici
+    private TypeTour tourSelectionne;
+
+    private TourFactory tourFactory = new TourFactory();
     private boolean achatCase = false;
     private boolean ameliorerTour = false;
     private boolean defaiteLance;
@@ -133,20 +138,37 @@ public class Controller implements Initializable {
 
         // Bouton pour selectionnée les tours via des boutons:
         btnCanon.setOnAction(actionEvent -> {
-            tourSelectionne = "CANON";
+            tourSelectionne = TypeTour.CANON;
         });
 
         btnArcher.setOnAction(actionEvent -> {
-            tourSelectionne = "ARCHER";
+            tourSelectionne = TypeTour.ARCHER;
         });
 
         btnGlace.setOnAction(actionEvent -> {
-            tourSelectionne = "GLACE";
+            tourSelectionne = TypeTour.GLACE;
         });
 
         btnPoison.setOnAction(actionEvent -> {
-            tourSelectionne = "POISON";
+            tourSelectionne = TypeTour.POISON;
         });
+
+        // Version avant
+//        btnCanon.setOnAction(actionEvent -> {
+//            tourSelectionne = "CANON";
+//        });
+//
+//        btnArcher.setOnAction(actionEvent -> {
+//            tourSelectionne = "ARCHER";
+//        });
+//
+//        btnGlace.setOnAction(actionEvent -> {
+//            tourSelectionne = "GLACE";
+//        });
+//
+//        btnPoison.setOnAction(actionEvent -> {
+//            tourSelectionne = "POISON";
+//        });
 
         btnAcheterCase.setOnAction(actionEvent -> {
             achatCase = true;
@@ -292,19 +314,8 @@ public class Controller implements Initializable {
 
 
 
-    public Tour creerTourSelectionnee(String tourSelectionnee, Position position) {
-        switch (tourSelectionnee) {
-            case "CANON":
-                return new TourCanon(position);
-            case "ARCHER":
-                return new TourArcher(position);
-            case "GLACE":
-                return new TourGlace(position);
-            case "POISON":
-                return new TourPoison(position);
-            default:
-                return null;
-        }
+    public Tour creerTourSelectionnee(TypeTour tourSelectionnee, Position position) {
+        return tourFactory.creerTour(tourSelectionnee, position);
     }
 
 
@@ -345,29 +356,24 @@ public class Controller implements Initializable {
         btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
     }
 
+    private void definirBoutonsActifOuDesactif(boolean desactiveOuPas) {
+        btnRecommencer.setDisable(desactiveOuPas);
+        btnVague.setDisable(desactiveOuPas);
+        btnArcher.setDisable(desactiveOuPas);
+        btnCanon.setDisable(desactiveOuPas);
+        btnAcheterCase.setDisable(desactiveOuPas);
+        btnGlace.setDisable(desactiveOuPas);
+        btnPoison.setDisable(desactiveOuPas);
+        btnAmeliorer.setDisable(desactiveOuPas);
+    }
+
     public void desactiverToutLesBoutons() {
-        btnRecommencer.setDisable(true);
-        btnVague.setDisable(true);
-        btnArcher.setDisable(true);
-        btnCanon.setDisable(true);
-        btnAcheterCase.setDisable(true);
-        btnGlace.setDisable(true);
-        btnRecommencer.setDisable(true);
-        btnPoison.setDisable(true);
-        btnAmeliorer.setDisable(true);
+        definirBoutonsActifOuDesactif(true);
         this.defaiteLance = true;
     }
 
     public void activerToutLesBoutons() {
-        btnRecommencer.setDisable(false);
-        btnVague.setDisable(false);
-        btnArcher.setDisable(false);
-        btnCanon.setDisable(false);
-        btnAcheterCase.setDisable(false);
-        btnGlace.setDisable(false);
-        btnRecommencer.setDisable(false);
-        btnPoison.setDisable(false);
-        btnAmeliorer.setDisable(false);
+        definirBoutonsActifOuDesactif(false);
         this.defaiteLance = false;
     }
 
