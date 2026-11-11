@@ -210,6 +210,11 @@ public class Partie {
         return projectiles;
     }
 
+    public Tour trouverTour(Position position) {
+        return gestionnaireTours.trouverTour(position);
+    }
+
+
     public ObservableList<Tour> getTours() {
         return gestionnaireTours.getTours();
     }

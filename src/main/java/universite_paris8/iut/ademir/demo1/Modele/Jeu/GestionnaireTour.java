@@ -66,6 +66,15 @@ public class GestionnaireTour {
         }
     }
 
+    public Tour trouverTour(Position position) {
+        for (Tour tour : tours) {
+            if (tour.getPosition().equals(position)) {
+                return tour;
+            }
+        }
+        return null;
+    }
+
     public ObservableList<Tour> getTours() {
         return tours;
     }

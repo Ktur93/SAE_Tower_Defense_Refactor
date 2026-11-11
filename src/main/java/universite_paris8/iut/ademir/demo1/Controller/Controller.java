@@ -100,16 +100,11 @@ public class Controller implements Initializable {
     private class StrategieChangerCiblage implements StrategieClic {
         @Override
         public void executer(Position position) {
-            for (Tour tour : partie.getTours()) {
-                if (tour.getPosition().equals(position)) {
-                    tour.changerStrategieCiblage();
-                    labelCiblage.setText(
-                            "Tour (" + position.getX() + ", " + position.getY() + ") : "
-                                    + tour.getNomStrategieCiblage()
-                    );
-                    strategieClic = new StrategiePlacement();
-                    return;
-                }
+            Tour tour = partie.trouverTour(position);
+            if(tour != null){
+                tour.changerStrategieCiblage();
+                labelCiblage.setText("Tour (" + position.getX() + ", " + position.getY() + ") : " + tour.getNomStrategieCiblage());
+                strategieClic = new StrategiePlacement();
             }
         }
     }
@@ -260,6 +255,40 @@ public class Controller implements Initializable {
         gameLoop.start();
     }
 
+    public void initialiserListeners() {
+        partie.vagueEnCoursProperty().addListener((obs, old, now) -> {
+            mettreAjourBoutonsPartie();
+        });
+
+        partie.toutesLesVaguesTermineProperty().addListener((obs, old, now) -> {
+            mettreAjourBoutonsPartie();
+        });
+
+        partie.portailMortProperty().addListener((obs, old, now) -> {
+            mettreAjourBoutonsPartie();
+        });
+
+        partie.victoireProperty().addListener((obs, old, now) -> {
+            desactiverToutLesBoutons();
+            carteVue.ajouterEcranVictoire();
+        });
+
+        partie.defaiteProperty().addListener((obs, old, now) -> {
+            if (now) {
+                desactiverToutLesBoutons();
+                carteVue.ajouterEcranDefaite();
+            } else {
+                carteVue.retirerEcranDefaite();
+                recommencer();
+                activerToutLesBoutons();
+                mettreAJourBoutonVague();
+            }
+        });
+    }
+
+
+
+
     private void acheterCase(Position position) {
         partie.acheterCase(position, carte);
         carteVue.viderCarte();
@@ -292,55 +321,29 @@ public class Controller implements Initializable {
     }
 
     private void ameliorerTourCliquee(Position position) {
-        for (Tour tour : partie.getTours()) {
-            if (tour.getPosition().equals(position)) {
-                partie.faireAmeliorerTours(tour);
-                toursVue.MiseAjourImage(tour);
-            }
+        Tour tour = partie.trouverTour(position);
+
+        if (tour != null) {
+            partie.faireAmeliorerTours(tour);
+            toursVue.MiseAjourImage(tour);
         }
 
         ameliorerTour = false;
         strategieClic = new StrategiePlacement();
     }
 
-    public void initialiserListeners() {
-        partie.vagueEnCoursProperty().addListener((obs, old, now) -> {
-            mettreAjourBoutonsPartie();
-        });
 
-        partie.toutesLesVaguesTermineProperty().addListener((obs, old, now) -> {
-            mettreAjourBoutonsPartie();
-        });
 
-        partie.portailMortProperty().addListener((obs, old, now) -> {
-            mettreAjourBoutonsPartie();
-        });
 
-        partie.victoireProperty().addListener((obs, old, now) -> {
-            desactiverToutLesBoutons();
-            carteVue.ajouterEcranVictoire();
-        });
-
-        partie.defaiteProperty().addListener((obs, old, now) -> {
-            if (now) {
-                desactiverToutLesBoutons();
-                carteVue.ajouterEcranDefaite();
-            } else {
-                carteVue.retirerEcranDefaite();
-                recommencer();
-                activerToutLesBoutons();
-                mettreAJourBoutonVague();
-            }
-        });
+    public Tour creerTourSelectionnee(TypeTour tourSelectionnee, Position position) {
+        return tourFactory.creerTour(tourSelectionnee, position);
     }
+
+
 
     private void mettreAjourBoutonsPartie() {
         mettreAJourBoutonRecommencer();
         mettreAJourBoutonVague();
-    }
-
-    public Tour creerTourSelectionnee(TypeTour tourSelectionnee, Position position) {
-        return tourFactory.creerTour(tourSelectionnee, position);
     }
 
     public void mettreAJourBoutonVague() {
