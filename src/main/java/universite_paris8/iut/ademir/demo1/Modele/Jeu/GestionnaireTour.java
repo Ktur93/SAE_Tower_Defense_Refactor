@@ -41,10 +41,7 @@ public class GestionnaireTour {
         return true;
     }
 
-    public void faireAttaquerTours(
-            int compteur,
-            ObservableList<Monstre> monstres,
-            ObservableList<Projectile> projectiles) {
+    public void faireAttaquerTours(int compteur, ObservableList<Monstre> monstres, ObservableList<Projectile> projectiles) {
 
         for (Tour tour : tours) {
             Projectile projectile = tour.attaquer(monstres, compteur);

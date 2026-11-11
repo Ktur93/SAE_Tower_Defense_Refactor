@@ -64,8 +64,6 @@ public class Controller implements Initializable {
 
     private TypeTour tourSelectionne;
     private TourFactory tourFactory = new TourFactory();
-    private boolean achatCase = false;
-    private boolean ameliorerTour = false;
     private boolean defaiteLance;
     private CoeurVue coeurVue;
     private RubisVue rubisVue;
@@ -156,49 +154,36 @@ public class Controller implements Initializable {
         btnCanon.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.CANON;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
         });
 
         btnArcher.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.ARCHER;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
         });
 
         btnGlace.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.GLACE;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
         });
 
         btnPoison.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.POISON;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
         });
 
         btnAcheterCase.setOnAction(actionEvent -> {
-            achatCase = true;
-            ameliorerTour = false;
             strategieClic = new StrategieAchat();
         });
 
         btnAmeliorer.setOnAction(actionEvent -> {
-            ameliorerTour = true;
-            achatCase = false;
             strategieClic = new StrategieAmelioration();
         });
 
         btnCiblage.setOnAction(actionEvent -> {
-            achatCase = false;
-            ameliorerTour = false;
             strategieClic = new StrategieChangerCiblage();
             labelCiblage.setText("Clique sur une tour");
         });
+
     }
 
     private void initialiserVues() {
@@ -294,7 +279,7 @@ public class Controller implements Initializable {
         carteVue.viderCarte();
         carteVue.dessinerCarte();
         rubisVue.afficherRubis();
-        achatCase = false;
+
         strategieClic = new StrategiePlacement();
     }
 
@@ -328,12 +313,8 @@ public class Controller implements Initializable {
             toursVue.MiseAjourImage(tour);
         }
 
-        ameliorerTour = false;
         strategieClic = new StrategiePlacement();
     }
-
-
-
 
     public Tour creerTourSelectionnee(TypeTour tourSelectionnee, Position position) {
         return tourFactory.creerTour(tourSelectionnee, position);
@@ -380,8 +361,7 @@ public class Controller implements Initializable {
         coeurVue.mettreAJourPvPortail(3);
         btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
 
-        achatCase = false;
-        ameliorerTour = false;
+
         strategieClic = new StrategiePlacement();
         if (labelCiblage != null) {
             labelCiblage.setText("Ciblage : aucune tour");
