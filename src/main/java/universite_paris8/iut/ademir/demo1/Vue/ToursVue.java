@@ -64,8 +64,20 @@ public class ToursVue {
         if (tour instanceof TourPoison) {
             imageTour = new Image(Main.class.getResourceAsStream("Tours/poison.png"));
         }
-        Position position = tour.getPosition();
 
+        if (tour instanceof TourFeu){
+            imageTour = new Image(Main.class.getResourceAsStream("Tours/tourfeu.png"));
+        }
+
+        if (tour instanceof TourFoudre){
+            imageTour = new Image(Main.class.getResourceAsStream("Tours/tourfoudre.png"));
+        }
+
+        if (tour instanceof TourExplosive){
+            imageTour = new Image(Main.class.getResourceAsStream("Tours/tourexplosive.png"));
+        }
+
+        Position position = tour.getPosition();
         Label nivL = new Label();
         nivL.setText("niveau: " + tour.getNivT());
         nivL.setTextFill(Color.WHITE);
@@ -133,12 +145,33 @@ public class ToursVue {
                 imageTour = new Image(Main.class.getResourceAsStream("Tours/poison2.png"));
             }
         }
-        Position position = t.getPosition();
 
+        if (t instanceof TourFeu){
+            if(t.getNivT() == 2){
+                imageTour = new Image(Main.class.getResourceAsStream("Tours/tourfeu2.png"));
+            }
+            if (t.getNivT() == 3){
+                imageTour = new Image(Main.class.getResourceAsStream("Tours/tourfeu3.png"));
+            }
+        }
+
+        if (t instanceof TourFoudre){
+            if(t.getNivT() == 2){
+                imageTour = new Image(Main.class.getResourceAsStream("Tours/tourfoudre2.png"));;
+            }
+
+        }
+
+        if (t instanceof TourExplosive){
+            if(t.getNivT() == 2){
+                imageTour = new Image(Main.class.getResourceAsStream("Tours/tourexplosive2.png"));
+            }
+        }
+
+        Position position = t.getPosition();
         sprite = new ImageView(imageTour);
         sprite.setFitWidth(TAILLE_TUILE);
         sprite.setFitHeight(TAILLE_TUILE);
-
         sprite.setLayoutX(position.getX() * TAILLE_TUILE);
         sprite.setLayoutY(position.getY() * TAILLE_TUILE);
         paneSprites.getChildren().add(sprite);

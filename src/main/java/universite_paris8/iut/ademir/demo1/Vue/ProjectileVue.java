@@ -81,10 +81,13 @@ public class ProjectileVue {
             image = new Image(Main.class.getResourceAsStream("Projectiles/fleche.png"));
         }
         if (projectile instanceof ProjectileFeu) {
-            image = new Image(Main.class.getResourceAsStream("Projectiles/boulet.png")); // a modifié avec un projectileFeu
+            image = new Image(Main.class.getResourceAsStream("Projectiles/feu.png")); // a modifié avec un projectileFeu
         }
         if (projectile instanceof ProjectileFoudre) {
-            image = new Image(Main.class.getResourceAsStream("Projectiles/boulet.png")); // a modifié avec un projectileFoudre
+            image = new Image(Main.class.getResourceAsStream("Projectiles/foudre.png")); // a modifié avec un projectileFoudre
+        }
+        if (projectile instanceof ProjectileExplosion) {
+            image = new Image(Main.class.getResourceAsStream("Projectiles/bombe.png")); // a modifié avec un projectileFoudre
         }
 
         return image;
