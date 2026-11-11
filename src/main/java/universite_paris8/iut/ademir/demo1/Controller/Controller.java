@@ -50,6 +50,12 @@ public class Controller implements Initializable {
     @FXML
     private Button btnPoison;
     @FXML
+    private Button btnFeu;
+    @FXML
+    private Button btnFoudre;
+    @FXML
+    private Button btnExplosive;
+    @FXML
     private Button btnVague;
     @FXML
     private Button btnAcheterCase;
@@ -171,6 +177,21 @@ public class Controller implements Initializable {
             strategieClic = new StrategiePlacement();
         });
 
+        btnFeu.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.FEU;
+            strategieClic = new StrategiePlacement();
+        });
+
+        btnFoudre.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.FOUDRE;
+            strategieClic = new StrategiePlacement();
+        });
+
+        btnExplosive.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.EXPLOSIVE;
+            strategieClic = new StrategiePlacement();
+        });
+
         btnAcheterCase.setOnAction(actionEvent -> {
             strategieClic = new StrategieAchat();
         });
@@ -270,8 +291,6 @@ public class Controller implements Initializable {
             }
         });
     }
-
-
 
 
     private void acheterCase(Position position) {
@@ -384,6 +403,7 @@ public class Controller implements Initializable {
         btnAcheterCase.setDisable(desactiver);
         btnGlace.setDisable(desactiver);
         btnPoison.setDisable(desactiver);
+        btnFeu.setDisable(desactiver);
         btnAmeliorer.setDisable(desactiver);
         if (btnCiblage != null) {
             btnCiblage.setDisable(desactiver);

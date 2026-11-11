@@ -4,5 +4,8 @@ public enum TypeTour {
     CANON,
     ARCHER,
     GLACE,
-    POISON
+    POISON,
+    FEU,
+    FOUDRE,
+    EXPLOSIVE
 }
