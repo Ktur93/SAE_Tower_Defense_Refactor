@@ -19,4 +19,14 @@ public class CiblagePlusFort implements StrategieCiblage {
 
         return cible;
     }
+
+    @Override
+    public String getNom() {
+        return "Plus Fort";
+    }
+
+    @Override
+    public StrategieCiblage strategieSuivante() {
+        return new CiblagePremier();
+    }
 }

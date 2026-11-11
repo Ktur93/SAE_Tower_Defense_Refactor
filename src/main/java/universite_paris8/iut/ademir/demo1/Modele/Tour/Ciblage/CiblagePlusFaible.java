@@ -19,4 +19,14 @@ public class CiblagePlusFaible implements StrategieCiblage {
 
         return cible;
     }
+
+    @Override
+    public String getNom() {
+        return "Plus Faible";
+    }
+
+    @Override
+    public StrategieCiblage strategieSuivante() {
+        return new CiblagePlusFort();
+    }
 }
