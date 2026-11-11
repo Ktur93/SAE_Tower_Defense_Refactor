@@ -16,6 +16,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetFeu;
 import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetPoison;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.DeplacementMonstre;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.StrategieDeplacement;
+import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetFoudre;
 
 public class Monstre {
     private int recompense;
@@ -25,6 +26,7 @@ public class Monstre {
     private Effet effetPoison;
     private Effet effetGlace;
     private Effet effetFeu;
+    private Effet effetFoudre;
     private ArrayList<Effet> effets;
 
 
@@ -51,6 +53,7 @@ public class Monstre {
 
     private BooleanProperty glace;
     private BooleanProperty feu;
+    private BooleanProperty foudre;
 
 
 
@@ -83,27 +86,36 @@ public class Monstre {
 
         this.glace = new SimpleBooleanProperty(false);
         this.feu = new SimpleBooleanProperty(false);
+        this.foudre = new SimpleBooleanProperty(false);
 
         // les effets
         this.effetPoison = new EffetPoison();
         this.effetGlace = new EffetGlace();
         this.effetFeu = new EffetFeu();
+        this.effetFoudre = new EffetFoudre();
         this.effets = new ArrayList<>();
         this.effets.add(effetPoison);
         this.effets.add(effetGlace);
         this.effets.add(effetFeu);
+        this.effets.add(effetFoudre);
 
 
         compteurID++;
     }
 
     public void avancer() {
-        // ca parcourt tout les effets du monstre aulieu d'ajouter des if pour chaue effet
+        // On retient si le monstre etait immobilisé au debut pour la foudre
+        boolean immobilise = estSousFoudre();
+
+        // Les effets continuent à se mettre à jour
         for (Effet effet : effets) {
             effet.appliquer(this);
         }
 
-        deplacement.avancer(this);
+        // Le monstre avance seulement s'il n'était pas immobilisé
+        if (!immobilise) {
+            deplacement.avancer(this);
+        }
     }
 
     public boolean estArrive() {
@@ -184,6 +196,14 @@ public class Monstre {
     public void recevoirDegatsPoison(int degats) {
         recevoirDegats(degats); // Degats du projectile +
         effetPoison.activer();  // activation du poison
+    }
+
+    public void recevoirDegatsFoudre(int degats) {
+        // Les degats sont mis une seule fois au moment de l'impact
+        recevoirDegats(degats);
+
+        effetFoudre.activer();
+        setFoudre(true);
     }
 
 
@@ -269,6 +289,18 @@ public class Monstre {
 
     public void agir(ObservableList<Monstre> monstres) {
         // de base, un monstre n'a pas d'action particulière ca va se repercuter sur les extends.
+    }
+
+    public BooleanProperty foudreProperty() {
+        return foudre;
+    }
+
+    public boolean estSousFoudre() {
+        return foudre.get();
+    }
+
+    public void setFoudre(boolean sousFoudre) {
+        foudre.set(sousFoudre);
     }
 
 

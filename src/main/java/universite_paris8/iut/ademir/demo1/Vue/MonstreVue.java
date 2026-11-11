@@ -81,6 +81,9 @@ public class MonstreVue {
         monstre.feuProperty().addListener((obs, old, now) -> {
             sprite.setImage(imageMonstre(monstre));
         });
+        monstre.foudreProperty().addListener((obs, old, now) -> {
+            sprite.setImage(imageMonstre(monstre));
+        });
 
         sprite.setFitWidth(TAILLE_TUILE);
         sprite.setFitHeight(TAILLE_TUILE);
@@ -162,7 +165,81 @@ public class MonstreVue {
         return image;
     }
 
+    private Image imageMonstreSousFoudre(Monstre monstre) {
+        Image image = null;
+
+        if (monstre instanceof ZombieRapide) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/zombieRapideFoudre.png"));
+
+        } else if (monstre instanceof AraigneeRapide) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeRapideFoudre.png"));
+
+        } else if (monstre instanceof SqueletteRapide) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteRapideFoudre.png"));
+
+        } else if (monstre instanceof PillagerRapide) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerRapideFoudre.png"));
+
+        } else if (monstre instanceof ChauveSourisRapide) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisRapideFoudre.png"));
+
+        } else if (monstre instanceof ZombieSoigneur) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/zombieSoigneurFoudre.png"));
+
+        } else if (monstre instanceof AraigneeSoigneuse) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeSoigneuseFoudre.png"));
+
+        } else if (monstre instanceof SqueletteSoigneur) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteSoigneurFoudre.png"));
+
+        } else if (monstre instanceof PillagerSoigneur) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerSoigneurFoudre.png"));
+
+        } else if (monstre instanceof ChauveSourisSoigneuse) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisSoigneuseFoudre.png"));
+
+        } else if (monstre instanceof ZombieResistant) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/zombieResistantFoudre.png"));
+
+        } else if (monstre instanceof AraigneeResistante) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeResistanteFoudre.png"));
+
+        } else if (monstre instanceof SqueletteResistant) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteResistantFoudre.png"));
+
+        } else if (monstre instanceof PillagerResistant) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerResistantFoudre.png"));
+
+        } else if (monstre instanceof ChauveSourisResistante) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisResistanteFoudre.png"));
+
+        } else if (monstre instanceof Zombie) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/zombieFoudre.png"));
+
+        } else if (monstre instanceof Araignee) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/araigneeFoudre.png"));
+
+        } else if (monstre instanceof Squelette) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/squeletteFoudre.png"));
+
+        } else if (monstre instanceof Pillager) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/pillagerFoudre.png"));
+
+        } else if (monstre instanceof Boss) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/bossFoudre.png"));
+
+        } else if (monstre instanceof ChauveSouris) {
+            image = new Image(Main.class.getResourceAsStream("Monstres/chauveSourisFoudre.png"));
+        }
+
+        return image;
+    }
+
     public Image imageMonstre(Monstre monstre) {
+
+        if (monstre.estSousFoudre()) {
+            return imageMonstreSousFoudre(monstre);
+        }
 
         if (monstre.estEnFeu()) {
             return imageMonstreEnFeu(monstre);
