@@ -5,21 +5,26 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import java.util.ArrayList;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import universite_paris8.iut.ademir.demo1.Modele.Effets.Effet;
 import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetGlace;
+import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetFeu;
 import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetPoison;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.DeplacementMonstre;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.StrategieDeplacement;
 
 public class Monstre {
     private int recompense;
-    private DeplacementMonstre deplacement;
+    private StrategieDeplacement deplacement;
     private int degat;
 
     private Effet effetPoison;
     private Effet effetGlace;
+    private Effet effetFeu;
     private ArrayList<Effet> effets;
 
 
@@ -45,6 +50,7 @@ public class Monstre {
     private static int compteurID = 0;
 
     private BooleanProperty glace;
+    private BooleanProperty feu;
 
 
 
@@ -76,13 +82,16 @@ public class Monstre {
         this.monstreID = "monstre" + compteurID;
 
         this.glace = new SimpleBooleanProperty(false);
+        this.feu = new SimpleBooleanProperty(false);
 
         // les effets
         this.effetPoison = new EffetPoison();
         this.effetGlace = new EffetGlace();
+        this.effetFeu = new EffetFeu();
         this.effets = new ArrayList<>();
         this.effets.add(effetPoison);
         this.effets.add(effetGlace);
+        this.effets.add(effetFeu);
 
 
         compteurID++;
@@ -102,7 +111,11 @@ public class Monstre {
     }
 
     public Position getPosition() {
-        return deplacement.getPosition();
+        return deplacement.getPosition(this);
+    }
+
+    public void setDeplacement(StrategieDeplacement deplacement) {
+        this.deplacement = deplacement;
     }
 
 
@@ -150,9 +163,22 @@ public class Monstre {
     }
 
     public void recevoirDegatsGlace(int degats) {
-        pv.setValue(getPv() - degats);
-        setGlace(true);
-        this.effetGlace.activer();
+        recevoirDegats(degats);
+        if (!estEnFeu()) {
+            setGlace(true);
+            effetGlace.activer();
+        }
+    }
+
+    public void recevoirDegatsFeu(int degats) {
+        recevoirDegats(degats);
+
+        if (estGlace()) {
+            effetGlace.arreter(this);
+        }
+
+        effetFeu.activer();
+        setFeu(true);
     }
 
     public void recevoirDegatsPoison(int degats) {
@@ -214,7 +240,19 @@ public class Monstre {
     }
 
     public boolean estADestination() {
-        return (getDernierePositionX() == this.getPosition().getX() && getDernierePositionY() == this.getPosition().getY());
+        return deplacement.estArrive();
+    }
+
+    public BooleanProperty feuProperty() {
+        return feu;
+    }
+
+    public boolean estEnFeu() {
+        return feu.get();
+    }
+
+    public void setFeu(boolean enFeu) {
+        feu.set(enFeu);
     }
 
     public BooleanProperty glaceProperty() {
@@ -227,6 +265,10 @@ public class Monstre {
 
     public void setGlace(boolean estGlaceOuPas) {
         glace.set(estGlaceOuPas);
+    }
+
+    public void agir(ObservableList<Monstre> monstres) {
+        // de base, un monstre n'a pas d'action particulière ca va se repercuter sur les extends.
     }
 
 

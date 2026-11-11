@@ -6,6 +6,8 @@ import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
+import universite_paris8.iut.ademir.demo1.Modele.Tour.Ciblage.CiblagePremier;
+import universite_paris8.iut.ademir.demo1.Modele.Tour.Ciblage.StrategieCiblage;
 
 
 public abstract class Tour {
@@ -59,7 +61,7 @@ public abstract class Tour {
     }
 
 
-    protected boolean estAPorter(Monstre monstre) {
+    public boolean estAPorter(Monstre monstre) {
         int x = position.getX() - monstre.getPosition().getX();
         int y = position.getY() - monstre.getPosition().getY();
         int CalculePorter = (x * x + y * y);
@@ -139,6 +141,14 @@ public abstract class Tour {
 
     public void setStrategieCiblage(StrategieCiblage strategieCiblage) {
         this.strategieCiblage = strategieCiblage;
+    }
+
+    public void changerStrategieCiblage() {
+        strategieCiblage = strategieCiblage.strategieSuivante();
+    }
+
+    public String getNomStrategieCiblage() {
+        return strategieCiblage.getType().getNom();
     }
 
 }

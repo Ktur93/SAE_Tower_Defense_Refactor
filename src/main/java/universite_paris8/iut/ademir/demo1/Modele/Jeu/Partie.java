@@ -141,13 +141,22 @@ public class Partie {
 
     public void faireAvancerMonstres() {
 
-        for (int i = 0 ; i < getMonstres().size() ; i++){
+        for (int i = 0; i < getMonstres().size(); i++) {
             Monstre monstre = getMonstres().get(i);
+
             monstre.avancer();
+
             if (monstre.estADestination()) {
                 recevoirDegatPortail(monstre.getDegat());
                 monstre.setRecompense(0);
                 monstre.setPv(0);
+            }
+        }
+
+        // Une fois les monstres deplace on fait leur actions si ils en ont
+        for (Monstre monstre : getMonstres()) {
+            if (!monstre.estMort()) {
+                monstre.agir(getMonstres());
             }
         }
     }
@@ -243,15 +252,7 @@ public class Partie {
 
     }
 
-    public void lancerProchaineVague() {
-        if (this.vagueEnCours.get()) {
 
-        } else if (indiceVague >= vagues.size()) {
-
-        } else {
-            this.vagueEnCours.set(true);
-        }
-    }
 
     public void recommnencer() {
         setIndiceVaguePlusUn(0);
@@ -262,10 +263,19 @@ public class Partie {
         this.prixAmelioration = 75;
 
         // recreation des vagues
-        // recreation des vagues
         creeVagues();
 
         tours.clear();
+    }
+
+    public void lancerProchaineVague() {
+        if (this.vagueEnCours.get()) {
+
+        } else if (indiceVague >= vagues.size()) {
+
+        } else {
+            this.vagueEnCours.set(true);
+        }
     }
 
     public void projectilePourMettreAJour(){

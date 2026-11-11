@@ -56,6 +56,10 @@ public class Controller implements Initializable {
     private Button btnAcheterCase;
     @FXML
     private Button btnAmeliorer;
+    @FXML
+    private Button btnCiblage;
+    @FXML
+    private Label labelCiblage;
 
     private Carte carte;
     private Partie partie;
@@ -68,6 +72,7 @@ public class Controller implements Initializable {
     private TourFactory tourFactory = new TourFactory();
     private boolean achatCase = false;
     private boolean ameliorerTour = false;
+    private boolean changerCiblage = false;
     private boolean defaiteLance;
 
     private CoeurVue coeurVue;
@@ -139,44 +144,41 @@ public class Controller implements Initializable {
         // Bouton pour selectionnée les tours via des boutons:
         btnCanon.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.CANON;
+            changerCiblage = false;
         });
 
         btnArcher.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.ARCHER;
+            changerCiblage = false;
         });
 
         btnGlace.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.GLACE;
+            changerCiblage = false;
         });
 
         btnPoison.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.POISON;
+            changerCiblage = false;
         });
-
-        // Version avant
-//        btnCanon.setOnAction(actionEvent -> {
-//            tourSelectionne = "CANON";
-//        });
-//
-//        btnArcher.setOnAction(actionEvent -> {
-//            tourSelectionne = "ARCHER";
-//        });
-//
-//        btnGlace.setOnAction(actionEvent -> {
-//            tourSelectionne = "GLACE";
-//        });
-//
-//        btnPoison.setOnAction(actionEvent -> {
-//            tourSelectionne = "POISON";
-//        });
 
         btnAcheterCase.setOnAction(actionEvent -> {
             achatCase = true;
+            changerCiblage = false;
         });
 
         btnAmeliorer.setOnAction(actionEvent -> {
             ameliorerTour = true;
-            // System.out.println("click");
+            changerCiblage = false;
+        });
+
+        btnCiblage.setOnAction(actionEvent -> {
+            changerCiblage = true;
+
+            achatCase = false;
+            ameliorerTour = false;
+
+            labelCiblage.setText("Clique sur une tour");
         });
 
 
@@ -187,6 +189,11 @@ public class Controller implements Initializable {
             int colonne = (int) (event.getX() / TAILLE_TUILE);
             int ligne = (int) (event.getY() / TAILLE_TUILE);
             Position position = new Position(colonne, ligne);
+
+            if (changerCiblage) {
+                labelCiblage.setText("Clique sur une tour");
+                return;
+            }
 
             // Achete la case si possible
             if (achatCase) {
@@ -237,6 +244,25 @@ public class Controller implements Initializable {
                     i++;
                 }
                 ameliorerTour = false;
+            }
+
+            if (changerCiblage) {
+
+                for (Tour tour : partie.getTours()) {
+
+                    if (tour.getPosition().equals(position)) {
+                        tour.changerStrategieCiblage();
+
+                        labelCiblage.setText(
+                                "Tour (" + colonne + ", " + ligne + ") : "
+                                        + tour.getNomStrategieCiblage()
+                        );
+
+                        changerCiblage = false;
+                    }
+                }
+
+                return;
             }
         });
 
@@ -354,6 +380,8 @@ public class Controller implements Initializable {
         paneSprites.getChildren().clear();
         coeurVue.mettreAJourPvPortail(3);
         btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
+        changerCiblage = false;
+        labelCiblage.setText("Ciblage : aucune tour");
     }
 
     private void definirBoutonsActifOuDesactif(boolean desactiveOuPas) {
@@ -365,6 +393,7 @@ public class Controller implements Initializable {
         btnGlace.setDisable(desactiveOuPas);
         btnPoison.setDisable(desactiveOuPas);
         btnAmeliorer.setDisable(desactiveOuPas);
+        btnCiblage.setDisable(desactiveOuPas);
     }
 
     public void desactiverToutLesBoutons() {

@@ -1,7 +1,8 @@
-package universite_paris8.iut.ademir.demo1.Modele.Tour;
+package universite_paris8.iut.ademir.demo1.Modele.Tour.Ciblage;
 
 import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
+import universite_paris8.iut.ademir.demo1.Modele.Tour.Tour;
 
 public class CiblagePlusFaible implements StrategieCiblage {
 
@@ -18,5 +19,15 @@ public class CiblagePlusFaible implements StrategieCiblage {
         }
 
         return cible;
+    }
+
+    @Override
+    public TypeCiblage getType() {
+        return TypeCiblage.PLUS_FAIBLE;
+    }
+
+    @Override
+    public StrategieCiblage strategieSuivante() {
+        return new CiblagePlusFort();
     }
 }

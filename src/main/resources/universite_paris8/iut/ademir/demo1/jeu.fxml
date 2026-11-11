@@ -65,6 +65,10 @@
             <Label text="Terrain" style="-fx-text-fill: white;-fx-font-size: 18;-fx-font-weight: bold;"/>
             <Button fx:id="btnAcheterCase" text="Acheter case - 25" maxWidth="Infinity"/>
             <Button fx:id="btnAmeliorer" text="Amelioration - 50" maxWidth="Infinity"/>
+
+            <Button fx:id="btnCiblage" text="Changer le ciblage" maxWidth="Infinity"/>
+
+            <Label fx:id="labelCiblage" text="Ciblage : aucune tour" wrapText="true" style="-fx-text-fill: white;"/>
             <Separator/>
 
             <Label text="Actions" style="-fx-text-fill: white;-fx-font-size: 18;-fx-font-weight: bold;"/>

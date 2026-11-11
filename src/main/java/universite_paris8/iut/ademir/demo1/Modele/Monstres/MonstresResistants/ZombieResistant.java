@@ -1,4 +1,4 @@
-package universite_paris8.iut.ademir.demo1.Modele.Monstres.MontresResistants;
+package universite_paris8.iut.ademir.demo1.Modele.Monstres.MonstresResistants;
 
 import java.util.ArrayList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
@@ -14,6 +14,11 @@ public class ZombieResistant extends Zombie {
     public void recevoirDegatsPoison(int degats) {
         // Le projectile retire des PV,
         // mais l'effet poison ne s'active pas.
+        recevoirDegats(degats);
+    }
+
+    @Override
+    public void recevoirDegatsGlace(int degats) {
         recevoirDegats(degats);
     }
 }
