@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
+import universite_paris8.iut.ademir.demo1.Modele.Projectile.ProjectileExplosion;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.Tour;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
 
@@ -181,6 +182,11 @@ public class Partie {
 
         while (i < projectiles.size()) {
             Projectile projectile = projectiles.get(i);
+
+            if (projectile instanceof ProjectileExplosion) {
+                ((ProjectileExplosion) projectile).setMonstres(monstres);
+            }
+
             if (projectile.avancer()) {
                 projectiles.remove(i);
                 System.out.println("supp");
