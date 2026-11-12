@@ -5,7 +5,7 @@ public class GestionnaireScore {
     private int rubis;
 
     public GestionnaireScore() {
-        this.rubis = 400;
+        this.rubis = 111400;
     }
 
     public int getRubis() {

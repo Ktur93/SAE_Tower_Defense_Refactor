@@ -17,6 +17,9 @@ public class GestionnaireVague {
     private int indiceVague;
     private final BooleanProperty vagueEnCours;
 
+    private static final int NOMBRE_NIVEAUX = 5;
+    private int niveau;
+
     public GestionnaireVague(
             ArrayList<Position> chemin,
             ArrayList<Position> chemin2,
@@ -26,6 +29,7 @@ public class GestionnaireVague {
         this.vagueFactory = new VagueFactory();
 
         this.indiceVague = 0;
+        this.niveau = 1;
         this.vagueEnCours = new SimpleBooleanProperty(false);
 
         creerVagues(chemin, chemin2, chemin3);
@@ -41,7 +45,7 @@ public class GestionnaireVague {
 
         this.vagues.addAll(
                 vagueFactory.creerToutesLesVagues(
-                        chemin, chemin2, chemin3
+                        chemin, chemin2, chemin3,niveau
                 )
         );
     }
@@ -103,6 +107,27 @@ public class GestionnaireVague {
         creerVagues(chemin, chemin2, chemin3);
     }
 
+    public void changerNiveau(
+            ArrayList<Position> chemin,
+            ArrayList<Position> chemin2,
+            ArrayList<Position> chemin3) {
+
+        // On ne change pas de niveau quand la partie a commencé
+        if (vagueEnCours.get() || indiceVague != 0) {
+            return;
+        }
+
+        this.niveau++;
+
+        // Après le dernier niveau, on revient au premier
+        if (niveau > NOMBRE_NIVEAUX) {
+            niveau = 1;
+        }
+
+        // On crée les vagues du nouveau niveau
+        creerVagues(chemin, chemin2, chemin3);
+    }
+
     public ArrayList<Vague> getVagues() {
         return vagues;
     }
@@ -129,5 +154,9 @@ public class GestionnaireVague {
 
     public boolean getToutesLesVaguesTerminees() {
         return indiceVague >= vagues.size();
+    }
+
+    public int getNiveau() {
+        return niveau;
     }
 }

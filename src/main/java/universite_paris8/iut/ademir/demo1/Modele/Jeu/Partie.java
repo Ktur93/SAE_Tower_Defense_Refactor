@@ -316,4 +316,12 @@ public class Partie {
     public int getPvPortail() {
         return this.pvPortail;
     }
+
+    public int getNiveau() {
+        return gestionnaireVagues.getNiveau();
+    }
+
+    public void changerNiveau() {
+        gestionnaireVagues.changerNiveau(chemin, chemin2, chemin3);
+    }
 }

@@ -63,6 +63,8 @@ public class Controller implements Initializable {
     private Button btnAmeliorer;
     @FXML
     private Button btnCiblage;
+    @FXML
+    private Button btnNiveau;
 
     private Carte carte;
     private Partie partie;
@@ -203,6 +205,11 @@ public class Controller implements Initializable {
         btnCiblage.setOnAction(actionEvent -> {
             strategieClic = new StrategieChangerCiblage();
             labelCiblage.setText("Clique sur une tour");
+        });
+
+        btnNiveau.setOnAction(actionEvent -> {
+            partie.changerNiveau();
+            btnNiveau.setText("Niveau : " + partie.getNiveau());
         });
 
     }
@@ -347,6 +354,11 @@ public class Controller implements Initializable {
     }
 
     public void mettreAJourBoutonVague() {
+        if (partie.getVagueEnCours() || partie.getIndiceVague() != 0 || defaiteLance) {
+            btnNiveau.setDisable(true);
+        } else {
+            btnNiveau.setDisable(false);
+        }
         if (partie.getToutesLesVaguesTerminees()) {
             btnVague.setDisable(true);
             btnVague.setText("Vagues terminées");
@@ -379,6 +391,7 @@ public class Controller implements Initializable {
         paneSprites.getChildren().clear();
         coeurVue.mettreAJourPvPortail(3);
         btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
+        mettreAJourBoutonVague();
 
 
         strategieClic = new StrategiePlacement();
@@ -409,5 +422,6 @@ public class Controller implements Initializable {
             btnCiblage.setDisable(desactiver);
         }
         this.defaiteLance = desactiver;
+        btnNiveau.setDisable(desactiver);
     }
 }
