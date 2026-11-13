@@ -119,6 +119,7 @@ public class Controller implements Initializable {
         this.carteVue = new CarteVue(carte, paneCarte, paneDecoration);
         carteVue.dessinerCarte();
 
+
         initialiserPartie();
         initialiserBoutons();
         initialiserVues();
