@@ -46,10 +46,7 @@ public class GestionnaireTour {
         return true;
     }
 
-    public void faireAttaquerTours(
-            int compteur,
-            ObservableList<Monstre> monstres,
-            ObservableList<Projectile> projectiles) {
+    public void faireAttaquerTours(int compteur, ObservableList<Monstre> monstres, ObservableList<Projectile> projectiles) {
 
         for (Tour tour : tours) {
             Projectile projectile = tour.attaquer(monstres, compteur);
@@ -69,6 +66,15 @@ public class GestionnaireTour {
             partie.retirerRubis(prixAmelioration);
             tour.setNivT(tour.getNivT() + 1);
         }
+    }
+
+    public Tour trouverTour(Position position) {
+        for (Tour tour : tours) {
+            if (tour.getPosition().equals(position)) {
+                return tour;
+            }
+        }
+        return null;
     }
 
     public ObservableList<Tour> getTours() {

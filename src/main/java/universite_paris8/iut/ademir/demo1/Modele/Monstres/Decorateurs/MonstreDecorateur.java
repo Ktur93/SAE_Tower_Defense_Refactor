@@ -170,69 +170,75 @@ public abstract class MonstreDecorateur implements Monstre {
         monstreDecore.recevoirDegatsPoison(degats);
     }
 
-
-
     @Override
     public void recevoirDegatsFeu(int degats, Monstre monstreActif) {
         monstreDecore.recevoirDegatsFeu(degats, monstreActif);
     }
 
+    @Override
+    public void recevoirDegatsFoudre(int degats) {
+        monstreDecore.recevoirDegatsFoudre(degats);
+    }
 
     @Override
     public boolean estGlace() {
         return monstreDecore.estGlace();
     }
 
-
-
-
     @Override
     public void setGlace(boolean glace) {
         monstreDecore.setGlace(glace);
     }
-
 
     @Override
     public BooleanProperty glaceProperty() {
         return monstreDecore.glaceProperty();
     }
 
-
     @Override
     public boolean estEnFeu() {
         return monstreDecore.estEnFeu();
     }
-
 
     @Override
     public void setFeu(boolean feu) {
         monstreDecore.setFeu(feu);
     }
 
-
     @Override
     public BooleanProperty feuProperty() {
         return monstreDecore.feuProperty();
     }
 
+    @Override
+    public BooleanProperty foudreProperty() {
+        return monstreDecore.foudreProperty();
+    }
+
+    @Override
+    public boolean estSousFoudre() {
+        return monstreDecore.estSousFoudre();
+    }
+
+    @Override
+    public void setFoudre(boolean sousFoudre) {
+        monstreDecore.setFoudre(sousFoudre);
+    }
 
     @Override
     public String getMonstreID() {
         return monstreDecore.getMonstreID();
     }
 
-
     @Override
     public Monstre getMonstreDeBase() {
         return monstreDecore.getMonstreDeBase();
     }
 
-
     @Override
     public VarianteMonstre getVariante() {
         return monstreDecore.getVariante();
     }
-
 
     @Override
     public void agir(ObservableList<Monstre> monstres) {

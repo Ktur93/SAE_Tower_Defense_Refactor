@@ -33,15 +33,10 @@ public abstract class Tour {
         this.prix = prix;
         this.porter = porter;
         this.nivMax = nivMax;
-
         this.dernierTir = 0;
         this.cadence = cadence;
-
-
         this.position = position;
-
         this.nivT = new SimpleIntegerProperty(1);
-
         this.strategieCiblage = new CiblagePremier();
     }
 
@@ -71,13 +66,13 @@ public abstract class Tour {
         return false;
     }
 
-    public abstract void ameliorer();
     public Projectile creerProjectile(Monstre cible) {
         double x = getPosition().getX() * 64;
         double y = getPosition().getY() * 64;
         return nouveauProjectile(x, y, cible);
     }
 
+    public abstract void ameliorer();
     protected abstract Projectile nouveauProjectile(double x, double y, Monstre cible);
 
 

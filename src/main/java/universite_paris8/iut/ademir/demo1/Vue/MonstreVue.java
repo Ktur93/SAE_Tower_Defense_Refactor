@@ -1,7 +1,5 @@
 package universite_paris8.iut.ademir.demo1.Vue;
 
-import java.net.URL;
-
 import javafx.collections.ListChangeListener;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,6 +9,8 @@ import universite_paris8.iut.ademir.demo1.Main;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.*;
 import javafx.scene.shape.Rectangle;
+
+import java.net.URL;
 
 public class MonstreVue {
 
@@ -80,6 +80,9 @@ public class MonstreVue {
         monstre.feuProperty().addListener((obs, old, now) -> {
             sprite.setImage(imageMonstre(monstre));
         });
+        monstre.foudreProperty().addListener((obs, old, now) -> {
+            sprite.setImage(imageMonstre(monstre));
+        });
 
         sprite.setFitWidth(TAILLE_TUILE);
         sprite.setFitHeight(TAILLE_TUILE);
@@ -112,9 +115,7 @@ public class MonstreVue {
         paneSprites.getChildren().add(sprite);
     }
 
-
-
-    // Choisit l espece reelle, la variante exterieure et l etat feu/gel.
+    // Choisit l espece reelle, la variante exterieure et l etat feu/gel/foudre.
     //mpd nouveaucode
     public Image imageMonstre(Monstre monstre) {
         String espece = getNomEspece(monstre.getMonstreDeBase());
@@ -162,6 +163,7 @@ public class MonstreVue {
 
     //mpd nouveaucode
     private String getNomEtat(Monstre monstre) {
+        if (monstre.estSousFoudre()) return "Foudre";
         if (monstre.estEnFeu()) return "Feu";
         if (monstre.estGlace()) return "Glace";
         return "";

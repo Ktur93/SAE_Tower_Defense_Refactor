@@ -32,8 +32,8 @@ public abstract class Effet {
     // Chaque effet définit sa propre action donc on met abstarct
     public void appliquer(Monstre monstre) {
         if (actif) {
-            appliquerEffet(monstre);
             this.compteur++;
+            appliquerEffet(monstre);
         }
     }
 

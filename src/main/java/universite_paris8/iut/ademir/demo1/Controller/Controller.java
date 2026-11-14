@@ -50,6 +50,12 @@ public class Controller implements Initializable {
     @FXML
     private Button btnPoison;
     @FXML
+    private Button btnFeu;
+    @FXML
+    private Button btnFoudre;
+    @FXML
+    private Button btnExplosive;
+    @FXML
     private Button btnVague;
     @FXML
     private Button btnAcheterCase;
@@ -57,6 +63,8 @@ public class Controller implements Initializable {
     private Button btnAmeliorer;
     @FXML
     private Button btnCiblage;
+    @FXML
+    private Button btnNiveau;
 
     private Carte carte;
     private Partie partie;
@@ -64,8 +72,6 @@ public class Controller implements Initializable {
 
     private TypeTour tourSelectionne;
     private TourFactory tourFactory = new TourFactory();
-    private boolean achatCase = false;
-    private boolean ameliorerTour = false;
     private boolean defaiteLance;
     private CoeurVue coeurVue;
     private RubisVue rubisVue;
@@ -100,16 +106,11 @@ public class Controller implements Initializable {
     private class StrategieChangerCiblage implements StrategieClic {
         @Override
         public void executer(Position position) {
-            for (Tour tour : partie.getTours()) {
-                if (tour.getPosition().equals(position)) {
-                    tour.changerStrategieCiblage();
-                    labelCiblage.setText(
-                            "Tour (" + position.getX() + ", " + position.getY() + ") : "
-                                    + tour.getNomStrategieCiblage()
-                    );
-                    strategieClic = new StrategiePlacement();
-                    return;
-                }
+            Tour tour = partie.trouverTour(position);
+            if(tour != null){
+                tour.changerStrategieCiblage();
+                labelCiblage.setText("Tour (" + position.getX() + ", " + position.getY() + ") : " + tour.getNomStrategieCiblage());
+                strategieClic = new StrategiePlacement();
             }
         }
     }
@@ -164,49 +165,56 @@ public class Controller implements Initializable {
         btnCanon.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.CANON;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
         });
 
         btnArcher.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.ARCHER;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
         });
 
         btnGlace.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.GLACE;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
         });
 
         btnPoison.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.POISON;
             strategieClic = new StrategiePlacement();
-            achatCase = false;
-            ameliorerTour = false;
+        });
+
+        btnFeu.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.FEU;
+            strategieClic = new StrategiePlacement();
+        });
+
+        btnFoudre.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.FOUDRE;
+            strategieClic = new StrategiePlacement();
+        });
+
+        btnExplosive.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.EXPLOSIVE;
+            strategieClic = new StrategiePlacement();
         });
 
         btnAcheterCase.setOnAction(actionEvent -> {
-            achatCase = true;
-            ameliorerTour = false;
             strategieClic = new StrategieAchat();
         });
 
         btnAmeliorer.setOnAction(actionEvent -> {
-            ameliorerTour = true;
-            achatCase = false;
             strategieClic = new StrategieAmelioration();
         });
 
         btnCiblage.setOnAction(actionEvent -> {
-            achatCase = false;
-            ameliorerTour = false;
             strategieClic = new StrategieChangerCiblage();
             labelCiblage.setText("Clique sur une tour");
         });
+
+        btnNiveau.setOnAction(actionEvent -> {
+            partie.changerNiveau();
+            btnNiveau.setText("Niveau : " + partie.getNiveau());
+        });
+
     }
 
     private void initialiserVues() {
@@ -263,55 +271,6 @@ public class Controller implements Initializable {
         gameLoop.start();
     }
 
-    //CSP nouveau code
-    private void acheterCase(Position position) {
-        //CSP ancien code
-        // partie.acheterCase(position, carte);
-        partie.acheterCase(position);
-        carteVue.viderCarte();
-        carteVue.dessinerCarte();
-        rubisVue.afficherRubis();
-        achatCase = false;
-        strategieClic = new StrategiePlacement();
-    }
-
-    //CSP nouveau code
-    private void placerTour(Position position) {
-        Tour tour = creerTourSelectionnee(tourSelectionne, position);
-        //CSP ancien code
-        // boolean placeDisponible = partie.placerTour(tour, carte);
-        boolean placeDisponible = partie.placerTour(tour);
-        if (placeDisponible) {
-            rubisVue.afficherRubis();
-            System.out.println("placement");
-        } else {
-            System.out.println("null");
-        }
-    }
-
-    private void gererClicCarte(Position position) {
-        strategieClic.executer(position);
-    }
-
-    private Position calculerPositionClic(double x, double y) {
-        int colonne = (int) (x / TAILLE_TUILE);
-        int ligne = (int) (y / TAILLE_TUILE);
-
-        return new Position(colonne, ligne);
-    }
-
-    private void ameliorerTourCliquee(Position position) {
-        for (Tour tour : partie.getTours()) {
-            if (tour.getPosition().equals(position)) {
-                partie.faireAmeliorerTours(tour);
-                toursVue.MiseAjourImage(tour);
-            }
-        }
-
-        ameliorerTour = false;
-        strategieClic = new StrategiePlacement();
-    }
-
     public void initialiserListeners() {
         partie.vagueEnCoursProperty().addListener((obs, old, now) -> {
             mettreAjourBoutonsPartie();
@@ -343,16 +302,66 @@ public class Controller implements Initializable {
         });
     }
 
-    private void mettreAjourBoutonsPartie() {
-        mettreAJourBoutonRecommencer();
-        mettreAJourBoutonVague();
+
+    private void acheterCase(Position position) {
+        partie.acheterCase(position);
+        carteVue.viderCarte();
+        carteVue.dessinerCarte();
+        rubisVue.afficherRubis();
+
+        strategieClic = new StrategiePlacement();
+    }
+
+    private void placerTour(Position position) {
+        Tour tour = creerTourSelectionnee(tourSelectionne, position);
+        boolean placeDisponible = partie.placerTour(tour);
+        if (placeDisponible) {
+            rubisVue.afficherRubis();
+            System.out.println("placement");
+        } else {
+            System.out.println("null");
+        }
+    }
+
+    private void gererClicCarte(Position position) {
+        strategieClic.executer(position);
+    }
+
+    private Position calculerPositionClic(double x, double y) {
+        int colonne = (int) (x / TAILLE_TUILE);
+        int ligne = (int) (y / TAILLE_TUILE);
+
+        return new Position(colonne, ligne);
+    }
+
+    private void ameliorerTourCliquee(Position position) {
+        Tour tour = partie.trouverTour(position);
+
+        if (tour != null) {
+            partie.faireAmeliorerTours(tour);
+            toursVue.MiseAjourImage(tour);
+        }
+
+        strategieClic = new StrategiePlacement();
     }
 
     public Tour creerTourSelectionnee(TypeTour tourSelectionnee, Position position) {
         return tourFactory.creerTour(tourSelectionnee, position);
     }
 
+
+
+    private void mettreAjourBoutonsPartie() {
+        mettreAJourBoutonRecommencer();
+        mettreAJourBoutonVague();
+    }
+
     public void mettreAJourBoutonVague() {
+        if (partie.getVagueEnCours() || partie.getIndiceVague() != 0 || defaiteLance) {
+            btnNiveau.setDisable(true);
+        } else {
+            btnNiveau.setDisable(false);
+        }
         if (partie.getToutesLesVaguesTerminees()) {
             btnVague.setDisable(true);
             btnVague.setText("Vagues terminées");
@@ -385,9 +394,9 @@ public class Controller implements Initializable {
         paneSprites.getChildren().clear();
         coeurVue.mettreAJourPvPortail(3);
         btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
+        mettreAJourBoutonVague();
 
-        achatCase = false;
-        ameliorerTour = false;
+
         strategieClic = new StrategiePlacement();
         if (labelCiblage != null) {
             labelCiblage.setText("Ciblage : aucune tour");
@@ -410,10 +419,12 @@ public class Controller implements Initializable {
         btnAcheterCase.setDisable(desactiver);
         btnGlace.setDisable(desactiver);
         btnPoison.setDisable(desactiver);
+        btnFeu.setDisable(desactiver);
         btnAmeliorer.setDisable(desactiver);
         if (btnCiblage != null) {
             btnCiblage.setDisable(desactiver);
         }
         this.defaiteLance = desactiver;
+        btnNiveau.setDisable(desactiver);
     }
 }

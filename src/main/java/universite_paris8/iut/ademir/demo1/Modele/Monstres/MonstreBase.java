@@ -1,7 +1,6 @@
 //mpd nouveaucode
 package universite_paris8.iut.ademir.demo1.Modele.Monstres;
 
-
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -15,6 +14,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Effets.Effet;
 import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetGlace;
 import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetFeu;
 import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetPoison;
+import universite_paris8.iut.ademir.demo1.Modele.Effets.EffetFoudre;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.DeplacementMonstre;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.StrategieDeplacement;
 
@@ -26,17 +26,14 @@ public abstract class MonstreBase implements Monstre {
     private Effet effetPoison;
     private Effet effetGlace;
     private Effet effetFeu;
+    private Effet effetFoudre;
     private ArrayList<Effet> effets;
-
-
 
     private double vitesse;
     private double vitesseNormal;
 
     private ArrayList<Position> chemin;
     private Position depart;
-
-
 
     private IntegerProperty pv;
     private int pvMax;
@@ -45,17 +42,11 @@ public abstract class MonstreBase implements Monstre {
 
     private String monstreID;
 
-
-
-
     private static int compteurID = 0;
 
     private BooleanProperty glace;
     private BooleanProperty feu;
-
-
-
-
+    private BooleanProperty foudre;
 
     public MonstreBase(int pv, double vitesse, double vitesseNormal, int recompense, int degat, ArrayList<Position> chemin) {
         this.recompense = recompense;
@@ -64,53 +55,45 @@ public abstract class MonstreBase implements Monstre {
 
         this.monstreID = "monstre" + compteurID;
 
-
         this.vitesse = vitesse;
         this.vitesseNormal = vitesseNormal;
 
-
         this.chemin = chemin;
         this.depart = chemin.get(0);
-
 
         this.pv = new SimpleIntegerProperty(pv);
         this.pvMax = pv;
         this.x = new SimpleDoubleProperty(depart.getX() * 64);
         this.y = new SimpleDoubleProperty(depart.getY() * 64);
 
-
-        this.monstreID = "monstre" + compteurID;
-
         this.glace = new SimpleBooleanProperty(false);
         this.feu = new SimpleBooleanProperty(false);
+        this.foudre = new SimpleBooleanProperty(false);
 
         // les effets
         this.effetPoison = new EffetPoison();
         this.effetGlace = new EffetGlace();
         this.effetFeu = new EffetFeu();
+        this.effetFoudre = new EffetFoudre();
         this.effets = new ArrayList<>();
         this.effets.add(effetPoison);
         this.effets.add(effetGlace);
         this.effets.add(effetFeu);
-
+        this.effets.add(effetFoudre);
 
         compteurID++;
     }
 
-
-
-
-
     public void avancer(Monstre monstreActif) {
+        boolean immobilise = monstreActif.estSousFoudre();
         for (Effet effet : effets) {
             effet.appliquer(monstreActif);
         }
 
-        deplacement.avancer(monstreActif);
+        if (!immobilise) {
+            deplacement.avancer(monstreActif);
+        }
     }
-
-
-
 
     public Position getPosition() {
         return deplacement.getPosition(this);
@@ -119,7 +102,6 @@ public abstract class MonstreBase implements Monstre {
     public void setDeplacement(StrategieDeplacement deplacement) {
         this.deplacement = deplacement;
     }
-
 
     public int getPv() {
         return this.pv.intValue();
@@ -145,14 +127,9 @@ public abstract class MonstreBase implements Monstre {
         return this.degat;
     }
 
-
-
     public double getVitesseNormal() {
         return this.vitesseNormal;
     }
-
-
-
 
     public void recevoirDegats(int degats) {
         pv.setValue(getPv() - degats);
@@ -166,10 +143,6 @@ public abstract class MonstreBase implements Monstre {
         }
     }
 
-
-
-
-
     public void recevoirDegatsFeu(int degats, Monstre monstreActif) {
         monstreActif.recevoirDegats(degats);
 
@@ -181,12 +154,16 @@ public abstract class MonstreBase implements Monstre {
         monstreActif.setFeu(true);
     }
 
-
     public void recevoirDegatsPoison(int degats) {
         recevoirDegats(degats); // Degats du projectile +
         effetPoison.activer();  // activation du poison
     }
 
+    public void recevoirDegatsFoudre(int degats) {
+        recevoirDegats(degats);
+        effetFoudre.activer();
+        setFoudre(true);
+    }
 
     public double getX () {
         return this.x.doubleValue();
@@ -268,12 +245,21 @@ public abstract class MonstreBase implements Monstre {
         glace.set(estGlaceOuPas);
     }
 
+    public BooleanProperty foudreProperty() {
+        return foudre;
+    }
+
+    public boolean estSousFoudre() {
+        return foudre.get();
+    }
+
+    public void setFoudre(boolean sousFoudre) {
+        foudre.set(sousFoudre);
+    }
+
     public void agir(ObservableList<Monstre> monstres) {
         // de base, un monstre n'a pas d'action particulière ca va se repercuter sur les extends.
     }
-
-
-
 
     public Monstre getMonstreDeBase() {
         return this;

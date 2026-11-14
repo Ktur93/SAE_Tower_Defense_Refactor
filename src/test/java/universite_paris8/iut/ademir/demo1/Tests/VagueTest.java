@@ -74,7 +74,7 @@ public class VagueTest {
     public void vague2AjouteAussiUnMonstreDansLaVersionActuelle() {
         // On cree une vague 2
         Vague vague = new Vague();
-        vague.creeVague2(creerPetitChemin());
+        vague.creeVague1(creerPetitChemin());
 
         ObservableList<Monstre> monstres = FXCollections.observableArrayList();
 
@@ -89,7 +89,7 @@ public class VagueTest {
     public void vague5AjouteAussiUnMonstreDansLaVersionActuelle() {
         // On cree une vague 5
         Vague vague = new Vague();
-        vague.creeVague5(creerPetitChemin());
+        vague.creeVague1(creerPetitChemin());
 
         ObservableList<Monstre> monstres = FXCollections.observableArrayList();
 

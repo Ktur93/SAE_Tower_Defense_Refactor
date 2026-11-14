@@ -7,11 +7,10 @@ import javafx.beans.property.IntegerProperty;
 import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.StrategieDeplacement;
+
 public interface Monstre {
 
-
     void avancer(Monstre monstreActif);
-
 
     Position getPosition();
 
@@ -29,7 +28,6 @@ public interface Monstre {
 
     int getDegat();
 
-
     double getVitesseNormal();
 
     void recevoirDegats(int degats);
@@ -39,6 +37,8 @@ public interface Monstre {
     void recevoirDegatsFeu(int degats, Monstre monstreActif);
 
     void recevoirDegatsPoison(int degats);
+
+    void recevoirDegatsFoudre(int degats);
 
     double getX();
 
@@ -79,6 +79,12 @@ public interface Monstre {
     boolean estGlace();
 
     void setGlace(boolean estGlaceOuPas);
+
+    BooleanProperty foudreProperty();
+
+    boolean estSousFoudre();
+
+    void setFoudre(boolean sousFoudre);
 
     void agir(ObservableList<Monstre> monstres);
 
