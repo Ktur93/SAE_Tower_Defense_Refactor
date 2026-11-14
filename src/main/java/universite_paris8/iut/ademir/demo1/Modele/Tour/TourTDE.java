@@ -9,12 +9,12 @@ import universite_paris8.iut.ademir.demo1.Modele.Projectile.ProjectileLazer;
 public class TourTDE extends Tour{
     private final DegatsLazer degatsLazer = new DegatsLazer();
     public TourTDE(Position position) {
-        super(30, 300, 4, position, 60, 2);
+        super(2, 300, 50, position, 60, 2);
     }
 
     @Override
     public void ameliorer() {
-        this.setAtk(this.getAtk() + 15);
+        this.setAtk(this.getAtk() + 4);
         this.setPorter(this.getPorter() + 1);
         this.setCadence(this.getCadence() - 3);
     }

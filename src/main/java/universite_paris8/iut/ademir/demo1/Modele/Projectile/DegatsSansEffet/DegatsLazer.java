@@ -6,28 +6,24 @@ import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 public class DegatsLazer {
 
     private Monstre cibleActuelle;
-    private int degatsActuels = 10;
+    private int degatsActuels;
 
-    public void appliquer(Monstre cible) {
-
+    public void appliquer(Monstre cible, int degatsBase) {
         if (cible == null || cible.estMort()) {
-            cibleActuelle = null;
-            degatsActuels = 10;
+            reinitialiser();
             return;
         }
-
-        // Si le laser change de cible, les dégâts recommencent à 10
         if (cibleActuelle != cible) {
             cibleActuelle = cible;
-            degatsActuels = 10;
+            degatsActuels = degatsBase;
         }
         cible.recevoirDegats(degatsActuels);
-        // Augmentation des dégâts pour le prochain impact
-        degatsActuels += 5;
+        degatsActuels = degatsActuels * 2;
     }
 
     public void reinitialiser() {
         cibleActuelle = null;
-        degatsActuels = 10;
+        degatsActuels = 0;
     }
 }
+

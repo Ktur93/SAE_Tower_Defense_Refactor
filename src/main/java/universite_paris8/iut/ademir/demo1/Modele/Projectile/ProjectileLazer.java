@@ -1,3 +1,4 @@
+
 package universite_paris8.iut.ademir.demo1.Modele.Projectile;
 
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
@@ -14,6 +15,6 @@ public class ProjectileLazer extends Projectile {
 
     @Override
     public void toucherCible() {
-        degatsLazer.appliquer(getCible());
+        degatsLazer.appliquer(getCible(), getDegats());
     }
 }
