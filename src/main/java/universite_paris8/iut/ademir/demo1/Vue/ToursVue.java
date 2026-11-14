@@ -77,6 +77,10 @@ public class ToursVue {
             imageTour = new Image(Main.class.getResourceAsStream("Tours/tourexplosive.png"));
         }
 
+        if (tour instanceof TourTDE){
+            imageTour= new Image(Main.class.getResourceAsStream("Tours/TDE.png"));
+        }
+
         Position position = tour.getPosition();
         Label nivL = new Label();
         nivL.setText("niveau: " + tour.getNivT());
@@ -165,6 +169,12 @@ public class ToursVue {
         if (t instanceof TourExplosive){
             if(t.getNivT() == 2){
                 imageTour = new Image(Main.class.getResourceAsStream("Tours/tourexplosive2.png"));
+            }
+        }
+
+        if(t instanceof TourTDE){
+            if(t.getNivT() == 2){
+                imageTour = new Image(Main.class.getResourceAsStream("Tours/TDE2.png"));
             }
         }
 

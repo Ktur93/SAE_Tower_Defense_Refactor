@@ -63,6 +63,8 @@ public class Controller implements Initializable {
     private Button btnAmeliorer;
     @FXML
     private Button btnCiblage;
+    @FXML
+    private Button btnTDE;
 
     private Carte carte;
     private Partie partie;
@@ -190,6 +192,11 @@ public class Controller implements Initializable {
 
         btnExplosive.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.EXPLOSIVE;
+            strategieClic = new StrategiePlacement();
+        });
+
+        btnTDE.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.TDE;
             strategieClic = new StrategiePlacement();
         });
 

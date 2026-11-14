@@ -7,5 +7,6 @@ public enum TypeTour {
     POISON,
     FEU,
     FOUDRE,
-    EXPLOSIVE
+    EXPLOSIVE,
+    TDE
 }

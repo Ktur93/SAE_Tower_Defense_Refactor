@@ -16,7 +16,6 @@ import universite_paris8.iut.ademir.demo1.Modele.Monstres.MonstresSoigneurs.*;
 public class MonstreVue {
 
     private static final int TAILLE_TUILE = 64;
-
     private Partie partie;
     private Pane paneSprites;
 

@@ -87,7 +87,10 @@ public class ProjectileVue {
             image = new Image(Main.class.getResourceAsStream("Projectiles/foudre.png")); // a modifié avec un projectileFoudre
         }
         if (projectile instanceof ProjectileExplosion) {
-            image = new Image(Main.class.getResourceAsStream("Projectiles/bombe.png")); // a modifié avec un projectileFoudre
+            image = new Image(Main.class.getResourceAsStream("Projectiles/bombe.png"));
+        }
+        if (projectile instanceof ProjectileLazer){
+            image = new Image(Main.class.getResourceAsStream("Projectiles/plasma.gif"));
         }
 
         return image;
