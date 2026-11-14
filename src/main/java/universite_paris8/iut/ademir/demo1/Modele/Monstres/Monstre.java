@@ -201,7 +201,6 @@ public class Monstre {
     public void recevoirDegatsFoudre(int degats) {
         // Les degats sont mis une seule fois au moment de l'impact
         recevoirDegats(degats);
-
         effetFoudre.activer();
         setFoudre(true);
     }
