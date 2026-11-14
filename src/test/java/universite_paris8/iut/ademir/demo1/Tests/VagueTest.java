@@ -45,10 +45,11 @@ public class VagueTest {
 
         ObservableList<Monstre> monstres = FXCollections.observableArrayList();
 
-        // La vague envoie son monstre
-        vague.mettreAJourVague(0, monstres);
+        // La vague envoie tous ses monstres au fil des ticks
+        for (int i = 0; i < 500; i++) {
+            vague.mettreAJourVague(i, monstres);
+        }
 
-        // La vague 1 contient un seul monstre dans la version actuelle
         assertTrue(vague.tousLesMonstresEnvoyes());
     }
 

@@ -143,6 +143,12 @@ public abstract class MonstreBase implements Monstre {
         }
     }
 
+    @Override
+    public void recevoirDegatsFeu(int degats) {
+        recevoirDegatsFeu(degats, this);
+    }
+
+    @Override
     public void recevoirDegatsFeu(int degats, Monstre monstreActif) {
         monstreActif.recevoirDegats(degats);
 

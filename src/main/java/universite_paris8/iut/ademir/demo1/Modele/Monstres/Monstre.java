@@ -34,6 +34,8 @@ public interface Monstre {
 
     void recevoirDegatsGlace(int degats);
 
+    void recevoirDegatsFeu(int degats);
+
     void recevoirDegatsFeu(int degats, Monstre monstreActif);
 
     void recevoirDegatsPoison(int degats);

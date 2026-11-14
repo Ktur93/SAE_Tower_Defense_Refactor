@@ -190,8 +190,6 @@ public class Vague {
         monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
         monstresVague.add(new MonstreResistant(new Pillager(chemin3)));
 
-        monstresVague.add(new ChauveSouris(chemin1));
-
         if (niveau >= 2) {
             monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
             monstresVague.add(new MonstreRapide(new Araignee(chemin2)));
@@ -225,7 +223,7 @@ public class Vague {
     public void mettreAJourVague(int compteur, ObservableList<Monstre> monstres) {
         if (this.indiceMonstre < this.monstresVague.size()) {
 
-            if (compteur - dernierSpawn >= delaiSpawn) {
+            if (this.indiceMonstre == 0 || compteur - dernierSpawn >= delaiSpawn) {
                 monstres.add(this.monstresVague.get(this.indiceMonstre));
                 this.indiceMonstre++;
                 this.dernierSpawn = compteur;

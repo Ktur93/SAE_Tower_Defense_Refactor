@@ -82,7 +82,7 @@ public class MonstreTest {
         Zombie zombie = new Zombie(creerPetitChemin());
 
         // On le fait avancer plusieurs fois pour atteindre la fin
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             zombie.avancer(zombie);
         }
 
