@@ -65,6 +65,8 @@ public class Controller implements Initializable {
     private Button btnCiblage;
     @FXML
     private Button btnNiveau;
+    @FXML
+    private Button btnTDE;
 
     private Carte carte;
     private Partie partie;
@@ -123,6 +125,7 @@ public class Controller implements Initializable {
         carte = Carte.getInstance();
         this.carteVue = new CarteVue(carte, paneCarte, paneDecoration);
         carteVue.dessinerCarte();
+
 
         initialiserPartie();
         initialiserBoutons();
@@ -194,6 +197,11 @@ public class Controller implements Initializable {
 
         btnExplosive.setOnAction(actionEvent -> {
             tourSelectionne = TypeTour.EXPLOSIVE;
+            strategieClic = new StrategiePlacement();
+        });
+
+        btnTDE.setOnAction(actionEvent -> {
+            tourSelectionne = TypeTour.TDE;
             strategieClic = new StrategiePlacement();
         });
 
@@ -423,6 +431,15 @@ public class Controller implements Initializable {
         btnAmeliorer.setDisable(desactiver);
         if (btnCiblage != null) {
             btnCiblage.setDisable(desactiver);
+        }
+        if (btnFoudre != null) {
+            btnFoudre.setDisable(desactiver);
+        }
+        if (btnExplosive != null) {
+            btnExplosive.setDisable(desactiver);
+        }
+        if (btnTDE != null) {
+            btnTDE.setDisable(desactiver);
         }
         this.defaiteLance = desactiver;
         btnNiveau.setDisable(desactiver);

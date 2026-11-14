@@ -32,6 +32,9 @@ public class TourFactory {
             case EXPLOSIVE:
                 TourExplosive tourExplosive = new TourExplosive(position);
                 return tourExplosive;
+            case TDE:
+                TourTDE tourTDE = new TourTDE(position);
+                return tourTDE;
             default:
                 return null;
         }

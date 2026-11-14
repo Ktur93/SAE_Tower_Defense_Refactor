@@ -25,4 +25,6 @@ public class FabriqueMonstre {
     public static Monstre creerBoss(ArrayList<Position> chemin) {
         return new Boss(chemin);
     }
+
+
 }
