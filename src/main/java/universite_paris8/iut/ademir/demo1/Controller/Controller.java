@@ -69,7 +69,6 @@ public class Controller implements Initializable {
     private Carte carte;
     private Partie partie;
     private CarteVue carteVue;
-
     private TypeTour tourSelectionne;
     private TourFactory tourFactory = new TourFactory();
     private boolean defaiteLance;
