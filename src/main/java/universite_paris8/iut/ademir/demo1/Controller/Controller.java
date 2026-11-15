@@ -76,7 +76,6 @@ public class Controller implements Initializable {
     private Carte carte;
     private Partie partie;
     private CarteVue carteVue;
-
     private TypeTour tourSelectionne;
     private FabriqueTour fabriqueTour = new FabriqueTour();
     private boolean defaiteLance;
@@ -226,6 +225,7 @@ public class Controller implements Initializable {
         btnNiveau.setOnAction(actionEvent -> {
             partie.changerNiveau();
             btnNiveau.setText("Niveau : " + partie.getNiveau());
+            carteVue.changerDecor(partie.getNiveau());
         });
 
         btnAnnuler.setOnAction(actionEvent -> {
@@ -448,6 +448,7 @@ public class Controller implements Initializable {
         paneSprites.getChildren().clear();
         coeurVue.mettreAJourPvPortail(partie.getPvPortail());
         btnNiveau.setText("Niveau : " + partie.getNiveau());
+        carteVue.changerDecor(partie.getNiveau());
         strategieClic = new StrategiePlacement();
         labelCiblage.setText("Ciblage : aucune tour");
     }
