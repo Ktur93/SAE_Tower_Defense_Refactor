@@ -16,6 +16,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Operations.AchatCase;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.ProjectileExplosion;
+import universite_paris8.iut.ademir.demo1.Modele.Sorts.Sort;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.Tour;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
 
@@ -415,5 +416,50 @@ public class Partie {
     // Notifie la disponibilite de l historique au bouton d annulation.
     public ReadOnlyBooleanProperty annulationPossibleProperty() {
         return historiqueCommandes.annulationPossibleProperty();
+    }
+
+    public boolean peutLancerSort(Sort sort) {
+        return sort != null
+                && etatPartie.get().peutInteragir()
+                && getRubis() >= sort.getCout();
+    }
+
+    public boolean lancerSort(Sort sort, double x, double y) {
+
+        if (!peutLancerSort(sort)) {
+            return false;
+        }
+
+        retirerRubis(sort.getCout());
+
+        double rayon = sort.getRayon();
+
+        for (Monstre monstre : new ArrayList<>(monstres)) {
+
+            if (monstre.estMort() || monstre.estADestination()) {
+                continue;
+            }
+
+            // Centre du monstre sur la carte.
+            double monstreX = monstre.getX() + 32;
+            double monstreY = monstre.getY() + 32;
+
+            double distanceX = monstreX - x;
+            double distanceY = monstreY - y;
+
+            double distanceCarree =
+                    distanceX * distanceX + distanceY * distanceY;
+
+            if (distanceCarree <= rayon * rayon) {
+
+                if (sort == Sort.BOULE_FEU) {
+                    monstre.recevoirDegatsFeu(sort.getDegats());
+                } else if (sort == Sort.BOULE_NEIGE) {
+                    monstre.recevoirDegatsGlace(sort.getDegats());
+                }
+            }
+        }
+
+        return true;
     }
 }
