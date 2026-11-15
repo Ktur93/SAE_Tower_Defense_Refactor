@@ -10,7 +10,7 @@ public class GestionnaireMonstre {
             Partie partie) {
 
         for (Monstre monstre : monstres) {
-            monstre.avancer();
+            monstre.avancer(monstre);
 
             if (monstre.estADestination()) {
                 partie.recevoirDegatPortail(monstre.getDegat());

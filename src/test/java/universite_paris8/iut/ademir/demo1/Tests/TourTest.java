@@ -49,11 +49,13 @@ public class TourTest {
         ObservableList<Monstre> monstres = FXCollections.observableArrayList();
         monstres.add(zombie);
 
-        // La tour attaque
-        tour.attaquer(monstres, 1000);
+        // La tour attaque et le projectile touche la cible
+        Projectile projectile = tour.attaquer(monstres, 1000);
+        assertNotNull(projectile);
+        projectile.avancer();
 
-        // Le canon inflige 35 degats, donc le zombie passe de 100 a 65 PV
-        assertEquals(65, zombie.getPv());
+        // Le canon inflige ses degats au zombie
+        assertEquals(100 - tour.getAtk(), zombie.getPv());
     }
 
     @Test
@@ -104,6 +106,6 @@ public class TourTest {
         // Les statistiques doivent augmenter
         assertTrue(tour.getAtk() > ancienneAtk);
         assertTrue(tour.getPorter() > anciennePortee);
-        assertTrue(tour.getCadence() > ancienneCadence);
+        assertTrue(tour.getCadence() < ancienneCadence); // Cadence amelioree (delai reduit)
     }
 }

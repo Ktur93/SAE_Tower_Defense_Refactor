@@ -6,10 +6,14 @@ public class Carte {
     public static final int CASE_DEBLOQUEE = 19;
     public static final int CASE_BLOQUEE = 20;
 
+    //CSP nouveau code
+    private static final Carte uniqueInstance = new Carte();
+
     private int[][] carte;
     private int[][] carteDecoration;
 
-    public Carte(){
+
+    private Carte(){
         carte = new int[][]{
                 {21,21,21,21,21,21,21,21,21,21,21, 0,16, 0, 0,21,21,21,21,21,21,21,21,21,21},
                 {21,21,21,21,21,21,21,21,21,21, 0, 0, 2, 0, 0, 0,21,21,21,21,21,21,21,21,21},
@@ -51,6 +55,11 @@ public class Carte {
     }
 
 
+
+    //CSP nouveau code
+    public static Carte getInstance() {
+        return uniqueInstance;
+    }
 
     public int getLargeur() {
         return carte[0].length;

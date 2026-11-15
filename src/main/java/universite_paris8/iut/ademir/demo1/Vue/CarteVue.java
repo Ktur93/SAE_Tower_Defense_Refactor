@@ -241,4 +241,10 @@ public class CarteVue {
     public void affichageViePortail(){
 
     }
+
+    //eta nouveau code
+    // Retire aussi l ecran de victoire lors du redemarrage.
+    public void retirerEcranVictoire() {
+        paneDecoration.getChildren().remove(labelVictoire);
+    }
 }

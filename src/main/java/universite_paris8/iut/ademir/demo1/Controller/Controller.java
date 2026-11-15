@@ -1,6 +1,7 @@
 package universite_paris8.iut.ademir.demo1.Controller;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,6 +14,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Algorithmes.BFS;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.Etats.*;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.*;
 import universite_paris8.iut.ademir.demo1.Vue.*;
 
@@ -64,7 +66,12 @@ public class Controller implements Initializable {
     @FXML
     private Button btnCiblage;
     @FXML
+    private Button btnNiveau;
+    @FXML
     private Button btnTDE;
+
+    @FXML
+    private Button btnAnnuler;
 
     private Carte carte;
     private Partie partie;
@@ -114,9 +121,10 @@ public class Controller implements Initializable {
         }
     }
 
+    //CSP nouveau code
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        carte = new Carte();
+        carte = Carte.getInstance();
         this.carteVue = new CarteVue(carte, paneCarte, paneDecoration);
         carteVue.dessinerCarte();
 
@@ -150,6 +158,8 @@ public class Controller implements Initializable {
         partie = new Partie(chemin, chemin2, chemin3);
     }
 
+    //cmd nouveau code
+    // Relie le bouton d annulation a la commande et a sa disponibilite observable.
     private void initialiserBoutons() {
         btnVague.setOnAction(actionEvent -> {
             partie.lancerProchaineVague();
@@ -212,11 +222,24 @@ public class Controller implements Initializable {
             labelCiblage.setText("Clique sur une tour");
         });
 
+        btnNiveau.setOnAction(actionEvent -> {
+            partie.changerNiveau();
+            btnNiveau.setText("Niveau : " + partie.getNiveau());
+        });
+
+        btnAnnuler.setOnAction(actionEvent -> {
+            partie.annulerDernierPlacement();
+        });
+        btnAnnuler.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> !partie.peutAnnulerPlacement(),
+                partie.annulationPossibleProperty(), partie.vagueEnCoursProperty(),
+                partie.etatPartieProperty()));
     }
 
+    //obs nouveau code
+    // Le constructeur de RubisVue installe la liaison automatique du label.
     private void initialiserVues() {
         rubisVue = new RubisVue(partie, labelRubis);
-        rubisVue.afficherRubis();
 
         MonstreVue monstreVue = new MonstreVue(partie, paneSprites);
         toursVue = new ToursVue(partie, paneSprites);
@@ -236,6 +259,9 @@ public class Controller implements Initializable {
         });
     }
 
+    //obs nouveau code
+    //eta nouveau code
+    // L affichage des rubis observe le modele et l etat de defaite gere son propre delai.
     private void initialiserGameLoop() {
         AnimationTimer gameLoop = new AnimationTimer() {
             long dernierTemps = 0;
@@ -245,7 +271,6 @@ public class Controller implements Initializable {
             public void handle(long tempActuel) {
                 if (tempActuel - dernierTemps >= ticke) {
                     partie.mettreAJour();
-                    rubisVue.afficherRubis();
 
                     btnAcheterCase.setText("Acheter case - " + partie.getPrixCase());
                     btnAmeliorer.setText("Amelioration - " + partie.getPrixAmelioration());
@@ -254,9 +279,6 @@ public class Controller implements Initializable {
                         int tempsDefaite = partie.getCompteur() - partie.getCompteurDefaite();
                         carteVue.timerRecommencer(tempsDefaite);
 
-                        if (tempsDefaite > 175) {
-                            partie.setDefaiteProperty(false);
-                        }
                     }
 
                     partie.setCompteurPlusPlus();
@@ -268,52 +290,46 @@ public class Controller implements Initializable {
         gameLoop.start();
     }
 
+    //eta nouveau code
+    // L interface reagit aux transitions du modele sans declencher un second redemarrage.
     public void initialiserListeners() {
-        partie.vagueEnCoursProperty().addListener((obs, old, now) -> {
-            mettreAjourBoutonsPartie();
-        });
+        partie.vagueEnCoursProperty().addListener((obs, old, now) -> mettreAjourBoutonsPartie());
+        partie.toutesLesVaguesTermineProperty().addListener((obs, old, now) -> mettreAjourBoutonsPartie());
+        partie.portailMortProperty().addListener((obs, old, now) -> mettreAjourBoutonsPartie());
 
-        partie.toutesLesVaguesTermineProperty().addListener((obs, old, now) -> {
-            mettreAjourBoutonsPartie();
-        });
-
-        partie.portailMortProperty().addListener((obs, old, now) -> {
-            mettreAjourBoutonsPartie();
-        });
-
-        partie.victoireProperty().addListener((obs, old, now) -> {
-            desactiverToutLesBoutons();
-            carteVue.ajouterEcranVictoire();
-        });
-
-        partie.defaiteProperty().addListener((obs, old, now) -> {
-            if (now) {
-                desactiverToutLesBoutons();
-                carteVue.ajouterEcranDefaite();
-            } else {
-                carteVue.retirerEcranDefaite();
-                recommencer();
+        partie.etatPartieProperty().addListener((obs, ancien, actuel) -> {
+            if (actuel instanceof EtatEnCours) {
+                reinitialiserAffichage();
                 activerToutLesBoutons();
-                mettreAJourBoutonVague();
+            } else {
+                desactiverToutLesBoutons();
+                if (actuel instanceof EtatVictoire) {
+                    carteVue.ajouterEcranVictoire();
+                } else if (actuel instanceof EtatDefaite) {
+                    carteVue.ajouterEcranDefaite();
+                }
             }
+            mettreAjourBoutonsPartie();
         });
     }
 
 
+    //obs nouveau code
+    // La modification du solde met a jour le label sans appel manuel.
     private void acheterCase(Position position) {
-        partie.acheterCase(position, carte);
+        partie.acheterCase(position);
         carteVue.viderCarte();
         carteVue.dessinerCarte();
-        rubisVue.afficherRubis();
 
         strategieClic = new StrategiePlacement();
     }
 
+    //obs nouveau code
+    // La modification du solde met a jour le label sans appel manuel.
     private void placerTour(Position position) {
         Tour tour = creerTourSelectionnee(tourSelectionne, position);
-        boolean placeDisponible = partie.placerTour(tour, carte);
+        boolean placeDisponible = partie.placerTour(tour);
         if (placeDisponible) {
-            rubisVue.afficherRubis();
             System.out.println("placement");
         } else {
             System.out.println("null");
@@ -354,6 +370,11 @@ public class Controller implements Initializable {
     }
 
     public void mettreAJourBoutonVague() {
+        if (partie.getVagueEnCours() || partie.getIndiceVague() != 0 || defaiteLance) {
+            btnNiveau.setDisable(true);
+        } else {
+            btnNiveau.setDisable(false);
+        }
         if (partie.getToutesLesVaguesTerminees()) {
             btnVague.setDisable(true);
             btnVague.setText("Vagues terminées");
@@ -368,30 +389,18 @@ public class Controller implements Initializable {
         }
     }
 
+    //eta nouveau code
+    // Le redemarrage manuel reste disponible apres une victoire.
     public void mettreAJourBoutonRecommencer() {
-        if (partie.getVagueEnCours()) {
-            btnRecommencer.setDisable(true);
-        } else if (this.defaiteLance) {
-            btnRecommencer.setDisable(true);
-        } else {
-            btnRecommencer.setDisable(false);
-        }
+        btnRecommencer.setDisable(partie.getVagueEnCours()
+                || partie.getEtatPartie() instanceof EtatPortailDetruit
+                || partie.getEtatPartie() instanceof EtatDefaite);
     }
 
+    //eta nouveau code
+    // Demande le redemarrage au modele ; le changement d etat actualise la vue.
     public void recommencer() {
         partie.recommnencer();
-        carte.caseBloquer();
-        carteVue.viderCarte();
-        carteVue.dessinerCarte();
-        paneSprites.getChildren().clear();
-        coeurVue.mettreAJourPvPortail(3);
-        btnVague.setText("Lancer vague " + partie.getIndiceVaguePlusUn());
-
-
-        strategieClic = new StrategiePlacement();
-        if (labelCiblage != null) {
-            labelCiblage.setText("Ciblage : aucune tour");
-        }
     }
 
     public void desactiverToutLesBoutons() {
@@ -415,6 +424,30 @@ public class Controller implements Initializable {
         if (btnCiblage != null) {
             btnCiblage.setDisable(desactiver);
         }
+        if (btnFoudre != null) {
+            btnFoudre.setDisable(desactiver);
+        }
+        if (btnExplosive != null) {
+            btnExplosive.setDisable(desactiver);
+        }
+        if (btnTDE != null) {
+            btnTDE.setDisable(desactiver);
+        }
         this.defaiteLance = desactiver;
+        btnNiveau.setDisable(desactiver);
+    }
+
+    //eta nouveau code
+    // Reconstruit l affichage seulement apres la reinitialisation complete du modele.
+    private void reinitialiserAffichage() {
+        carteVue.retirerEcranDefaite();
+        carteVue.retirerEcranVictoire();
+        carteVue.viderCarte();
+        carteVue.dessinerCarte();
+        paneSprites.getChildren().clear();
+        coeurVue.mettreAJourPvPortail(partie.getPvPortail());
+        btnNiveau.setText("Niveau : " + partie.getNiveau());
+        strategieClic = new StrategiePlacement();
+        labelCiblage.setText("Ciblage : aucune tour");
     }
 }

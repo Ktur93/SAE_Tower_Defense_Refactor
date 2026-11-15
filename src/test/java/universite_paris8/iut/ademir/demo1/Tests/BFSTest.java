@@ -1,5 +1,6 @@
 package universite_paris8.iut.ademir.demo1.Tests;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import universite_paris8.iut.ademir.demo1.Modele.Algorithmes.BFS;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
@@ -11,10 +12,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BFSTest {
 
+    @BeforeEach
+    public void preparerCarte() {
+        Carte.getInstance().caseBloquer();
+    }
+
     @Test
     public void cheminDepuisDepartVersArriveeExiste() {
-        // On cree la carte et les positions principales
-        Carte carte = new Carte();
+        // On recupere la carte partagee et les positions principales
+        Carte carte = Carte.getInstance();
         Position depart = new Position(0, 7);
         Position arrivee = carte.trouverArrivee();
 
@@ -29,8 +35,8 @@ public class BFSTest {
     @Test
     public void cheminCommenceParLeDepart() {
 
-        // On cree la carte, le depart et l arrivee
-        Carte carte = new Carte();
+        // On recupere la carte partagee, le depart et l arrivee
+        Carte carte = Carte.getInstance();
         Position depart = new Position(0, 7);
         Position arrivee = carte.trouverArrivee();
 
@@ -44,8 +50,8 @@ public class BFSTest {
 
     @Test
     public void cheminSeTermineParArrivee() {
-        // On cree la carte le depart et l'arrivee
-        Carte carte = new Carte();
+        // On recupere la carte partagee le depart et l'arrivee
+        Carte carte = Carte.getInstance();
         Position depart = new Position(0, 7);
         Position arrivee = carte.trouverArrivee();
 
@@ -59,8 +65,8 @@ public class BFSTest {
 
     @Test
     public void toutesLesCasesDuCheminSontMarchables() {
-        // On cree la carte, le depart et l'arrivee
-        Carte carte = new Carte();
+        // On recupere la carte partagee, le depart et l'arrivee
+        Carte carte = Carte.getInstance();
         Position depart = new Position(0, 7);
         Position arrivee = carte.trouverArrivee();
 
@@ -76,8 +82,8 @@ public class BFSTest {
 
     @Test
     public void parcoursBFSNestPasVide() {
-        // On cree une carte et un depart
-        Carte carte = new Carte();
+        // On recupere la carte partagee et un depart
+        Carte carte = Carte.getInstance();
         Position depart = new Position(0, 7);
 
         // le BFS parcourt les cases accessibles
