@@ -181,7 +181,7 @@ public class ToursVue {
 
         if (t instanceof TourExplosive){
             if(t.getNivT() == 2){
-                imageTour = new Image(Main.class.getResourceAsStream("Tours/tourexplosive2.png"));
+                imageTour = new Image(Main.class.getResourceAsStream("Tours/tourexplosiv2.png"));
             }
         }
 
