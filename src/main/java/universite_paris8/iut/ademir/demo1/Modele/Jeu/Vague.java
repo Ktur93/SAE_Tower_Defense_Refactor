@@ -2,10 +2,8 @@ package universite_paris8.iut.ademir.demo1.Modele.Jeu;
 
 import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.*;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.Decorateurs.MonstreRapide;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.Decorateurs.MonstreResistant;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.Decorateurs.MonstreSoigneur;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.FabriqueMonstre;
 
 import java.util.ArrayList;
 
@@ -16,14 +14,12 @@ public class Vague {
     private long dernierSpawn;
     private long delaiSpawn;
 
-
-    public Vague () {
+    public Vague() {
         this.monstresVague = new ArrayList<>();
         this.indiceMonstre = 0;
         this.dernierSpawn = 0;
         this.delaiSpawn = 40;
     }
-
 
     public void creeVague1(ArrayList<Position> chemin1) {
         creeVague1(chemin1, 1);
@@ -33,22 +29,23 @@ public class Vague {
         this.monstresVague.clear();
 
         for (int i = 0; i < 4; i++) {
-            monstresVague.add(new Zombie(chemin1));
+            monstresVague.add(FabriqueMonstre.creerZombie(chemin1));
         }
-        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
 
         if (niveau >= 2) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
         }
         if (niveau >= 3) {
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
         }
         if (niveau >= 4) {
-            monstresVague.add(new MonstreSoigneur(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerZombie(chemin1)));
         }
         if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
         }
     }
 
@@ -60,28 +57,28 @@ public class Vague {
         this.monstresVague.clear();
 
         for (int i = 0; i < 9; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
+            monstresVague.add(FabriqueMonstre.creerZombie(chemin1));
+            monstresVague.add(FabriqueMonstre.creerAraignee(chemin2));
         }
 
-        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
 
         if (niveau >= 2) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreRapide(new Araignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerAraignee(chemin2)));
         }
         if (niveau >= 3) {
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
         }
         if (niveau >= 4) {
-            monstresVague.add(new MonstreSoigneur(new Zombie(chemin1)));
-            monstresVague.add(new MonstreSoigneur(new Araignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerAraignee(chemin2)));
         }
         if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
         }
     }
 
@@ -93,33 +90,33 @@ public class Vague {
         this.monstresVague.clear();
 
         for (int i = 0; i < 14; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
-            monstresVague.add(new Squelette(chemin1));
+            monstresVague.add(FabriqueMonstre.creerZombie(chemin1));
+            monstresVague.add(FabriqueMonstre.creerAraignee(chemin2));
+            monstresVague.add(FabriqueMonstre.creerSquelette(chemin1));
         }
 
-        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
-        monstresVague.add(new MonstreResistant(new Squelette(chemin1)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerSquelette(chemin1)));
 
         if (niveau >= 2) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreRapide(new Araignee(chemin2)));
-            monstresVague.add(new MonstreRapide(new Squelette(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerSquelette(chemin1)));
         }
         if (niveau >= 3) {
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
-            monstresVague.add(new MonstreResistant(new Squelette(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerSquelette(chemin1)));
         }
         if (niveau >= 4) {
-            monstresVague.add(new MonstreSoigneur(new Zombie(chemin1)));
-            monstresVague.add(new MonstreSoigneur(new Araignee(chemin2)));
-            monstresVague.add(new MonstreSoigneur(new Squelette(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerSquelette(chemin1)));
         }
         if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
         }
     }
 
@@ -131,39 +128,39 @@ public class Vague {
         this.monstresVague.clear();
 
         for (int i = 0; i < 14; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
-            monstresVague.add(new Squelette(chemin3));
-            monstresVague.add(new Pillager(chemin2));
+            monstresVague.add(FabriqueMonstre.creerZombie(chemin1));
+            monstresVague.add(FabriqueMonstre.creerAraignee(chemin2));
+            monstresVague.add(FabriqueMonstre.creerSquelette(chemin3));
+            monstresVague.add(FabriqueMonstre.creerPillager(chemin2));
         }
 
-        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
-        monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
-        monstresVague.add(new MonstreResistant(new Pillager(chemin2)));
-        monstresVague.add(new MonstreResistant(new ChauveSouris(chemin1)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerSquelette(chemin3)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerPillager(chemin2)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerChauveSouris(chemin1)));
 
         if (niveau >= 2) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreRapide(new Araignee(chemin2)));
-            monstresVague.add(new MonstreRapide(new Squelette(chemin3)));
-            monstresVague.add(new MonstreRapide(new Pillager(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerSquelette(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerPillager(chemin2)));
         }
         if (niveau >= 3) {
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
-            monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
-            monstresVague.add(new MonstreResistant(new Pillager(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerSquelette(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerPillager(chemin2)));
         }
         if (niveau >= 4) {
-            monstresVague.add(new MonstreSoigneur(new Zombie(chemin1)));
-            monstresVague.add(new MonstreSoigneur(new Araignee(chemin2)));
-            monstresVague.add(new MonstreSoigneur(new Squelette(chemin3)));
-            monstresVague.add(new MonstreSoigneur(new Pillager(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerSquelette(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerPillager(chemin2)));
         }
         if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
         }
     }
 
@@ -175,54 +172,52 @@ public class Vague {
         this.monstresVague.clear();
 
         for (int i = 0; i < 18; i++) {
-            monstresVague.add(new Zombie(chemin1));
-            monstresVague.add(new Araignee(chemin2));
-            monstresVague.add(new Squelette(chemin3));
-            monstresVague.add(new Pillager(chemin3));
+            monstresVague.add(FabriqueMonstre.creerZombie(chemin1));
+            monstresVague.add(FabriqueMonstre.creerAraignee(chemin2));
+            monstresVague.add(FabriqueMonstre.creerSquelette(chemin3));
+            monstresVague.add(FabriqueMonstre.creerPillager(chemin3));
         }
 
-        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
-        monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
-        monstresVague.add(new MonstreResistant(new Pillager(chemin3)));
-        monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
-        monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
-        monstresVague.add(new MonstreResistant(new Pillager(chemin3)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerSquelette(chemin3)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerPillager(chemin3)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerSquelette(chemin3)));
+        monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerPillager(chemin3)));
 
         if (niveau >= 2) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreRapide(new Araignee(chemin2)));
-            monstresVague.add(new MonstreRapide(new Squelette(chemin3)));
-            monstresVague.add(new MonstreRapide(new Pillager(chemin3)));
-            monstresVague.add(new MonstreRapide(new ChauveSouris(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerSquelette(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerPillager(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerChauveSouris(chemin1)));
         }
         if (niveau >= 3) {
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Araignee(chemin2)));
-            monstresVague.add(new MonstreResistant(new Squelette(chemin3)));
-            monstresVague.add(new MonstreResistant(new Pillager(chemin3)));
-            monstresVague.add(new MonstreResistant(new ChauveSouris(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerSquelette(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerPillager(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerChauveSouris(chemin1)));
         }
         if (niveau >= 4) {
-            monstresVague.add(new MonstreSoigneur(new Zombie(chemin1)));
-            monstresVague.add(new MonstreSoigneur(new Araignee(chemin2)));
-            monstresVague.add(new MonstreSoigneur(new Squelette(chemin3)));
-            monstresVague.add(new MonstreSoigneur(new Pillager(chemin3)));
-            monstresVague.add(new MonstreSoigneur(new ChauveSouris(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerAraignee(chemin2)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerSquelette(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerPillager(chemin3)));
+            monstresVague.add(FabriqueMonstre.creerSoigneur(FabriqueMonstre.creerChauveSouris(chemin1)));
         }
         if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerRapide(FabriqueMonstre.creerZombie(chemin1)));
+            monstresVague.add(FabriqueMonstre.creerResistant(FabriqueMonstre.creerZombie(chemin1)));
         }
 
-        monstresVague.add(new Boss(chemin1));
+        monstresVague.add(FabriqueMonstre.creerBoss(chemin1));
     }
-
 
     public void mettreAJourVague(int compteur, ObservableList<Monstre> monstres) {
         if (this.indiceMonstre < this.monstresVague.size()) {
-
             if (this.indiceMonstre == 0 || compteur - dernierSpawn >= delaiSpawn) {
                 monstres.add(this.monstresVague.get(this.indiceMonstre));
                 this.indiceMonstre++;
