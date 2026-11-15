@@ -9,6 +9,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.VarianteMonstre;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Deplacements.StrategieDeplacement;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.TypeMonstre;
 
 
 public abstract class MonstreDecorateur implements Monstre {
@@ -248,5 +249,10 @@ public abstract class MonstreDecorateur implements Monstre {
     @Override
     public void agir(ObservableList<Monstre> monstres) {
         monstreDecore.agir(monstres);
+    }
+
+    @Override
+    public TypeMonstre getTypeMonstre() {
+        return monstreDecore.getTypeMonstre();
     }
 }

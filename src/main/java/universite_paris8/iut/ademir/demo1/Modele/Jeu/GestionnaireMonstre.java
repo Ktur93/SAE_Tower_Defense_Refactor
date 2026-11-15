@@ -12,7 +12,7 @@ public class GestionnaireMonstre {
         for (Monstre monstre : monstres) {
             monstre.avancer(monstre);
 
-            if (monstre.estADestination()) {
+            if (!monstre.estMort() && monstre.estADestination()) {
                 partie.recevoirDegatPortail(monstre.getDegat());
                 monstre.setRecompense(0);
                 monstre.setPv(0);

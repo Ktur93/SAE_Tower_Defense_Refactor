@@ -14,4 +14,9 @@ public class ChauveSouris extends MonstreBase {
 
         this.setDeplacement(new DeplacementVolant(portail));
     }
+
+    @Override
+    public TypeMonstre getTypeMonstre() {
+        return TypeMonstre.CHAUVE_SOURIS;
+    }
 }

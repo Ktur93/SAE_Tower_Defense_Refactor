@@ -46,10 +46,7 @@ public class Vague {
         if (niveau >= 4) {
             monstresVague.add(new MonstreSoigneur(new Zombie(chemin1)));
         }
-        if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        }
+        ajouterMonstresNiveau5(chemin1, niveau);
     }
 
     public void creeVague2(ArrayList<Position> chemin1, ArrayList<Position> chemin2) {
@@ -79,10 +76,7 @@ public class Vague {
             monstresVague.add(new MonstreSoigneur(new Zombie(chemin1)));
             monstresVague.add(new MonstreSoigneur(new Araignee(chemin2)));
         }
-        if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        }
+        ajouterMonstresNiveau5(chemin1, niveau);
     }
 
     public void creeVague3(ArrayList<Position> chemin1, ArrayList<Position> chemin2) {
@@ -117,10 +111,7 @@ public class Vague {
             monstresVague.add(new MonstreSoigneur(new Araignee(chemin2)));
             monstresVague.add(new MonstreSoigneur(new Squelette(chemin1)));
         }
-        if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        }
+        ajouterMonstresNiveau5(chemin1, niveau);
     }
 
     public void creeVague4(ArrayList<Position> chemin1, ArrayList<Position> chemin2, ArrayList<Position> chemin3) {
@@ -161,10 +152,7 @@ public class Vague {
             monstresVague.add(new MonstreSoigneur(new Squelette(chemin3)));
             monstresVague.add(new MonstreSoigneur(new Pillager(chemin2)));
         }
-        if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        }
+        ajouterMonstresNiveau5(chemin1, niveau);
     }
 
     public void creeVague5(ArrayList<Position> chemin1, ArrayList<Position> chemin2, ArrayList<Position> chemin3) {
@@ -211,12 +199,16 @@ public class Vague {
             monstresVague.add(new MonstreSoigneur(new Pillager(chemin3)));
             monstresVague.add(new MonstreSoigneur(new ChauveSouris(chemin1)));
         }
-        if (niveau >= 5) {
-            monstresVague.add(new MonstreRapide(new Zombie(chemin1)));
-            monstresVague.add(new MonstreResistant(new Zombie(chemin1)));
-        }
+        ajouterMonstresNiveau5(chemin1, niveau);
 
         monstresVague.add(new Boss(chemin1));
+    }
+
+    private void ajouterMonstresNiveau5(ArrayList<Position> chemin, int niveau) {
+        if (niveau >= 5) {
+            monstresVague.add(new MonstreRapide(new Zombie(chemin)));
+            monstresVague.add(new MonstreResistant(new Zombie(chemin)));
+        }
     }
 
 

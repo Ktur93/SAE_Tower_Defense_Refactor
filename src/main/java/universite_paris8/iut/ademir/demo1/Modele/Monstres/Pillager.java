@@ -11,4 +11,9 @@ public class Pillager extends MonstreBase {
     public Pillager(ArrayList<Position> chemin) {
         super(300, 5, 5,50,1, chemin);
     }
+
+    @Override
+    public TypeMonstre getTypeMonstre() {
+        return TypeMonstre.PILLAGER;
+    }
 }

@@ -9,4 +9,9 @@ public class Boss extends MonstreBase {
     public Boss(ArrayList<Position> chemin) {
         super(7500, 3, 3,150,3, chemin);
     }
+
+    @Override
+    public TypeMonstre getTypeMonstre() {
+        return TypeMonstre.BOSS;
+    }
 }

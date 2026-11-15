@@ -80,7 +80,7 @@ public abstract class MonstreBase implements Monstre {
 
         appliquerEffets(monstreActif);
 
-        if (!immobilise) {
+        if (!immobilise && !monstreActif.estMort()) {
             deplacement.avancer(monstreActif);
         }
     }

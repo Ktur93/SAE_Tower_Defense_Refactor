@@ -4,7 +4,8 @@ public enum TypeCiblage {
 
     PREMIER("Premier"),
     PLUS_FAIBLE("Plus faible"),
-    PLUS_FORT("Plus fort");
+    PLUS_FORT("Plus fort"),
+    PLUS_PROCHE_PORTAIL("Plus proche du portail");
 
     private final String nom;
 

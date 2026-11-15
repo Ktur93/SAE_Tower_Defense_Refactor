@@ -16,6 +16,6 @@ public class CiblagePlusFort extends CiblageSelonPv {
 
     @Override
     public StrategieCiblage strategieSuivante() {
-        return new CiblagePremier();
+        return new CiblagePlusProchePortail();
     }
 }

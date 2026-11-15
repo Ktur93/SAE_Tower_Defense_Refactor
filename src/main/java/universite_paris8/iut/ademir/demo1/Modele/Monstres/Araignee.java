@@ -10,4 +10,9 @@ public class Araignee extends MonstreBase {
     public Araignee(ArrayList<Position> chemin) {
         super(80, 5,5, 20,1, chemin);
     }
+
+    @Override
+    public TypeMonstre getTypeMonstre() {
+        return TypeMonstre.ARAIGNEE;
+    }
 }

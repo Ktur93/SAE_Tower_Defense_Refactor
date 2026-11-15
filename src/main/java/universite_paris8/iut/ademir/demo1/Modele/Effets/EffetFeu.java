@@ -2,7 +2,7 @@ package universite_paris8.iut.ademir.demo1.Modele.Effets;
 
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 
-public class EffetFeu extends Effet {
+public class EffetFeu extends EffetAvecDuree {
 
     private static final int DELAI_DEGATS = 60;
     private static final int DEGATS_FEU = 5;
@@ -12,15 +12,12 @@ public class EffetFeu extends Effet {
 
     @Override
     public void activer() {
-        // Si le monstre ne brule pas encore on demarre un nv compteur
+        // si le feu netait pas actif on remet le compteur de degats a zero
         if (!actif) {
             compteurDegats = 0;
         }
 
         super.activer();
-
-        // On remet la duree du feu à zero à chaque projectile qu'il recoit
-        compteur = 0;
     }
 
     @Override

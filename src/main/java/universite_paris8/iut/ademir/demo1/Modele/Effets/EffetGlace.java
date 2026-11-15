@@ -2,19 +2,13 @@ package universite_paris8.iut.ademir.demo1.Modele.Effets;
 
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 
-public class EffetGlace extends Effet {
+public class EffetGlace extends EffetAvecDuree {
 
     private static final double VITESSE_GLACE = 2;
     private static final int DUREE_GLACE = 600;
 
     public EffetGlace() {
         super();
-    }
-
-    @Override
-    public void activer() {
-        super.activer();
-        this.compteur = 0;
     }
 
     @Override

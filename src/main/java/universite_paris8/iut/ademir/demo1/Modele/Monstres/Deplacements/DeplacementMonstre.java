@@ -30,35 +30,37 @@ public class DeplacementMonstre implements StrategieDeplacement {
     }
 
     private void deplacerHorizontalement(Monstre monstre, double cibleX) {
-        if (monstre.getX() < cibleX) {
-            monstre.setX(monstre.getX() + monstre.getVitesse());
+        double nouvellePosition = calculerNouvellePosition(
+                monstre.getX(), cibleX, monstre.getVitesse()
+        );
 
-            if (monstre.getX() > cibleX) {
-                monstre.setX(cibleX);
-            }
-        } else if (monstre.getX() > cibleX) {
-            monstre.setX(monstre.getX() - monstre.getVitesse());
-
-            if (monstre.getX() < cibleX) {
-                monstre.setX(cibleX);
-            }
-        }
+        monstre.setX(nouvellePosition);
     }
 
     private void deplacerVerticalement(Monstre monstre, double cibleY) {
-        if (monstre.getY() > cibleY) {
-            monstre.setY(monstre.getY() - monstre.getVitesse());
+        double nouvellePosition = calculerNouvellePosition(
+                monstre.getY(), cibleY, monstre.getVitesse()
+        );
 
-            if (monstre.getY() < cibleY) {
-                monstre.setY(cibleY);
+        monstre.setY(nouvellePosition);
+    }
+
+    private double calculerNouvellePosition(double position, double cible, double vitesse) {
+        if (position < cible) {
+            position = position + vitesse;
+
+            if (position > cible) {
+                position = cible;
             }
-        } else if (monstre.getY() < cibleY) {
-            monstre.setY(monstre.getY() + monstre.getVitesse());
+        } else if (position > cible) {
+            position = position - vitesse;
 
-            if (monstre.getY() > cibleY) {
-                monstre.setY(cibleY);
+            if (position < cible) {
+                position = cible;
             }
         }
+
+        return position;
     }
 
     public boolean estArrive() {

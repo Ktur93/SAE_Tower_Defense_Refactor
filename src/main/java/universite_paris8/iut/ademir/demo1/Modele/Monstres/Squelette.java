@@ -9,4 +9,9 @@ public class Squelette extends MonstreBase {
     public Squelette(ArrayList<Position> chemin) {
         super(200, 4, 5,30,1, chemin);
     }
+
+    @Override
+    public TypeMonstre getTypeMonstre() {
+        return TypeMonstre.SQUELETTE;
+    }
 }

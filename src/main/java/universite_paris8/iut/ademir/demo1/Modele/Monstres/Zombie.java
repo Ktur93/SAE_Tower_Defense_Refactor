@@ -8,4 +8,9 @@ public class Zombie extends MonstreBase {
     public Zombie(ArrayList<Position> chemin) {
         super(100, 3.5, 4,10,1, chemin);
     }
+
+    @Override
+    public TypeMonstre getTypeMonstre() {
+        return TypeMonstre.ZOMBIE;
+    }
 }

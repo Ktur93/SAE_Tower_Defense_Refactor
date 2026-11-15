@@ -117,7 +117,7 @@ public class MonstreVue {
     // Choisit l espece reelle, la variante exterieure et l etat feu/gel/foudre.
     //mpd nouveaucode
     public Image imageMonstre(Monstre monstre) {
-        String espece = getNomEspece(monstre.getMonstreDeBase());
+        String espece = getNomEspece(monstre);
         if (espece == null) {
             System.out.printf("Image introuvable : espece de monstre inconnue.%n");
             return null;
@@ -138,15 +138,8 @@ public class MonstreVue {
         return new Image(ressource.toExternalForm());
     }
 
-    //mpd nouveaucode
     private String getNomEspece(Monstre monstre) {
-        if (monstre instanceof Zombie) return "zombie";
-        if (monstre instanceof Araignee) return "araignee";
-        if (monstre instanceof Squelette) return "squelette";
-        if (monstre instanceof Pillager) return "pillager";
-        if (monstre instanceof ChauveSouris) return "chauveSouris";
-        if (monstre instanceof Boss) return "boss";
-        return null;
+        return monstre.getTypeMonstre().getNom();
     }
 
     //mpd nouveaucode

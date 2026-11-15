@@ -93,4 +93,6 @@ public interface Monstre {
     Monstre getMonstreDeBase();
 
     VarianteMonstre getVariante();
+
+    TypeMonstre getTypeMonstre();
 }
