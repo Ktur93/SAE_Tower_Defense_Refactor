@@ -2,7 +2,7 @@ package universite_paris8.iut.ademir.demo1.Modele.Tour;
 
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 
-public class TourFactory {
+public class FabriqueTour {
 
     public Tour creerTour(TypeTour type, Position position) {
         if (type == null) {

@@ -10,7 +10,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Jeu.Operations.OperationPayante
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.Tour;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.TourCanon;
-import universite_paris8.iut.ademir.demo1.Modele.Tour.TourFactory;
+import universite_paris8.iut.ademir.demo1.Modele.Tour.FabriqueTour;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.TypeTour;
 
 import java.util.ArrayList;
@@ -162,7 +162,7 @@ public class OperationPayanteTest {
 
     @Test
     public void toutesLesToursConserventLeurAmeliorationSpecialisee() {
-        TourFactory factory = new TourFactory();
+        FabriqueTour factory = new FabriqueTour();
         carte.caseDebloquer(emplacement);
 
         for (TypeTour type : TypeTour.values()) {

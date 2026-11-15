@@ -39,9 +39,12 @@ public class MonstreSoigneur extends MonstreDecorateur {
         if (cible.getMonstreDeBase() == getMonstreDeBase() || cible.estMort()) {
             return false;
         }
-        int dx = getPosition().getX() - cible.getPosition().getX();
-        int dy = getPosition().getY() - cible.getPosition().getY();
-        return dx * dx + dy * dy <= RAYON_SOIN * RAYON_SOIN;
+
+        return estDansRayonSoin(cible);
+    }
+
+    private boolean estDansRayonSoin(Monstre cible) {
+        return getPosition().estDansRayon(cible.getPosition(), RAYON_SOIN);
     }
 
     @Override

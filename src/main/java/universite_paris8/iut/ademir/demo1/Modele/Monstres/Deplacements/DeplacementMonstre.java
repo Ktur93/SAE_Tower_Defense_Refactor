@@ -19,38 +19,44 @@ public class DeplacementMonstre implements StrategieDeplacement {
             double cibleX = posSuivante.getX() * 64;
             double cibleY = posSuivante.getY() * 64;
 
-            // si il est a gauche de la cible   on le fait avancé avec sa vitesse
-            if (monstre.getX() < cibleX) {
-                monstre.setX(monstre.getX()+monstre.getVitesse());
+            deplacerHorizontalement(monstre, cibleX);
+            deplacerVerticalement(monstre, cibleY);
 
-                if (monstre.getX() > cibleX) {
-                    monstre.setX(cibleX);
-                }
-            } else if (monstre.getX() > cibleX) {
-                monstre.setX( monstre.getX() - monstre.getVitesse());
-
-                if (monstre.getX() < cibleX) {
-                    monstre.setX(cibleX);
-                }
+            // quand la case est atteinte on passe a la suivante
+            if (monstre.getX() == cibleX && monstre.getY() == cibleY) {
+                indiceChemin++;
             }
+        }
+    }
+
+    private void deplacerHorizontalement(Monstre monstre, double cibleX) {
+        if (monstre.getX() < cibleX) {
+            monstre.setX(monstre.getX() + monstre.getVitesse());
+
+            if (monstre.getX() > cibleX) {
+                monstre.setX(cibleX);
+            }
+        } else if (monstre.getX() > cibleX) {
+            monstre.setX(monstre.getX() - monstre.getVitesse());
+
+            if (monstre.getX() < cibleX) {
+                monstre.setX(cibleX);
+            }
+        }
+    }
+
+    private void deplacerVerticalement(Monstre monstre, double cibleY) {
+        if (monstre.getY() > cibleY) {
+            monstre.setY(monstre.getY() - monstre.getVitesse());
+
+            if (monstre.getY() < cibleY) {
+                monstre.setY(cibleY);
+            }
+        } else if (monstre.getY() < cibleY) {
+            monstre.setY(monstre.getY() + monstre.getVitesse());
 
             if (monstre.getY() > cibleY) {
-                monstre.setY(monstre.getY() - monstre.getVitesse());
-
-                if (monstre.getY() < cibleY) {
-                    monstre.setY(cibleY);
-                }
-            } else if (monstre.getY() < cibleY) {
-                monstre.setY(monstre.getY() + monstre.getVitesse());
-
-                if (monstre.getY() > cibleY) {
-                    monstre.setY(cibleY);
-                }
-            }
-
-
-            if (monstre.getX() == posSuivante.getX() * 64 && monstre.getY() == posSuivante.getY() * 64) {
-                this.indiceChemin++;
+                monstre.setY(cibleY);
             }
         }
     }

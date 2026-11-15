@@ -4,6 +4,9 @@ import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 
 public class EffetGlace extends Effet {
 
+    private static final double VITESSE_GLACE = 2;
+    private static final int DUREE_GLACE = 600;
+
     public EffetGlace() {
         super();
     }
@@ -16,14 +19,12 @@ public class EffetGlace extends Effet {
 
     @Override
     protected void appliquerEffet(Monstre monstre) {
-        monstre.setVitesse(2);
+        monstre.setVitesse(VITESSE_GLACE);
 
-        if (this.compteur != 0 && this.compteur % 600 == 0) {
+        if (this.compteur != 0 && this.compteur % DUREE_GLACE == 0) {
             arreter(monstre);
             System.out.println("fin de effet Glace");
         }
-
-
     }
 
     @Override

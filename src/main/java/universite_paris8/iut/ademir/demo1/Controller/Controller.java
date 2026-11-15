@@ -78,7 +78,7 @@ public class Controller implements Initializable {
     private CarteVue carteVue;
 
     private TypeTour tourSelectionne;
-    private TourFactory tourFactory = new TourFactory();
+    private FabriqueTour fabriqueTour = new FabriqueTour();
     private boolean defaiteLance;
     private CoeurVue coeurVue;
     private RubisVue rubisVue;
@@ -360,7 +360,7 @@ public class Controller implements Initializable {
     }
 
     public Tour creerTourSelectionnee(TypeTour tourSelectionnee, Position position) {
-        return tourFactory.creerTour(tourSelectionnee, position);
+        return fabriqueTour.creerTour(tourSelectionnee, position);
     }
 
 

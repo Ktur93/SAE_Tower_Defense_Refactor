@@ -42,28 +42,24 @@ public abstract class Tour {
 
 
     public Projectile attaquer(ObservableList<Monstre> monstres, int compteur) {
-
-        if (compteur - dernierTir >= cadence) {
-            Monstre cible = strategieCiblage.choisirCible(monstres, this);
-
-            if (cible != null) {
-                dernierTir = compteur;
-                return creerProjectile(cible);
-            }
+        // la tour attend si sa cadence nest pas encore passee
+        if (compteur - dernierTir < cadence) {
+            return null;
         }
 
-        return null;
+        Monstre cible = strategieCiblage.choisirCible(monstres, this);
+
+        if (cible == null) {
+            return null;
+        }
+
+        dernierTir = compteur;
+        return creerProjectile(cible);
     }
 
 
     public boolean estAPorter(Monstre monstre) {
-        int x = position.getX() - monstre.getPosition().getX();
-        int y = position.getY() - monstre.getPosition().getY();
-        int CalculePorter = (x * x + y * y);
-        if (CalculePorter <= getPorter() * getPorter()){
-            return true;
-        }
-        return false;
+        return position.estDansRayon(monstre.getPosition(), porter);
     }
 
     public Projectile creerProjectile(Monstre cible) {

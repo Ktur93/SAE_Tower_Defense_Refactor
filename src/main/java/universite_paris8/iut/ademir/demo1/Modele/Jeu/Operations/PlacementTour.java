@@ -21,9 +21,19 @@ public class PlacementTour extends OperationPayante {
 
     @Override
     protected boolean conditionsRespectees() {
-        return tour != null
-                && tour.getPosition() != null
-                && carte.estCaseTour(tour.getPosition().getX(), tour.getPosition().getY());
+        if (tour == null || tour.getPosition() == null) {
+            return false;
+        }
+
+        // On verifie qu'il n'y a pas déjà une tour à cette position
+        for (Tour tourPresente : tours) {
+            if (tourPresente.getPosition().equals(tour.getPosition())) {
+                return false;
+            }
+        }
+
+        // On verifie que la case permet de placer une tour
+        return carte.estCaseTour(tour.getPosition().getX(), tour.getPosition().getY());
     }
 
     @Override

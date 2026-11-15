@@ -4,6 +4,8 @@ import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 
 public class EffetFoudre extends Effet {
 
+    private static final int DUREE_FOUDRE = 60;
+
     @Override
     public void activer() {
         super.activer();
@@ -13,12 +15,10 @@ public class EffetFoudre extends Effet {
 
     @Override
     protected void appliquerEffet(Monstre monstre) {
-        // 60 maj ca fait environ une seconde
-        if (compteur >= 60) {
+        if (compteur >= DUREE_FOUDRE) {
             arreter(monstre);
         }
     }
-
     @Override
     public void arreter(Monstre monstre) {
         desactiver();

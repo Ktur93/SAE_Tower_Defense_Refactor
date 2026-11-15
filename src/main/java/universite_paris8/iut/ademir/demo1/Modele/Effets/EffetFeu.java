@@ -4,6 +4,10 @@ import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 
 public class EffetFeu extends Effet {
 
+    private static final int DELAI_DEGATS = 60;
+    private static final int DEGATS_FEU = 5;
+    private static final int DUREE_FEU = 300;
+
     private int compteurDegats;
 
     @Override
@@ -23,16 +27,21 @@ public class EffetFeu extends Effet {
     protected void appliquerEffet(Monstre monstre) {
         compteurDegats++;
 
-        // Toutes les 60 maj le monstre perd 5 PV
-        if (compteurDegats >= 60) {
-            monstre.recevoirDegats(5);
+        // le monstre perd des pv regulierement
+        if (compteurDegats >= DELAI_DEGATS) {
+            monstre.recevoirDegats(DEGATS_FEU);
             compteurDegats = 0;
         }
 
-        // Le feu s'arrète 300 mises à jour apres le dernier coup
-        if (compteur >= 300) {
-            actif = false;
-            monstre.setFeu(false);
+        // le feu s'arrete apres sa duree
+        if (compteur >= DUREE_FEU) {
+            arreter(monstre);
         }
+    }
+
+    @Override
+    public void arreter(Monstre monstre) {
+        actif = false;
+        monstre.setFeu(false);
     }
 }

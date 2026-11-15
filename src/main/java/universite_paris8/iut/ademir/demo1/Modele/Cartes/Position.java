@@ -21,6 +21,13 @@ public class Position {
         return y;
     }
 
+    public boolean estDansRayon(Position autre, int rayon) {
+        int dx = this.x - autre.getX();
+        int dy = this.y - autre.getY();
+
+        return (dx * dx + dy * dy <= rayon * rayon);
+    }
+
 
     // UTILITE DANS LE BFS, SINON MARCHE PAS !!! PAS SUPPRIME
     @Override

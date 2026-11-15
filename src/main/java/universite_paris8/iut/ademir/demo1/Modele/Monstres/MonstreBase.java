@@ -70,28 +70,37 @@ public abstract class MonstreBase implements Monstre {
         this.feu = new SimpleBooleanProperty(false);
         this.foudre = new SimpleBooleanProperty(false);
 
-        // les effets
-        this.effetPoison = new EffetPoison();
-        this.effetGlace = new EffetGlace();
-        this.effetFeu = new EffetFeu();
-        this.effetFoudre = new EffetFoudre();
-        this.effets = new ArrayList<>();
-        this.effets.add(effetPoison);
-        this.effets.add(effetGlace);
-        this.effets.add(effetFeu);
-        this.effets.add(effetFoudre);
+        initialiserEffets();
 
         compteurID++;
     }
 
     public void avancer(Monstre monstreActif) {
         boolean immobilise = monstreActif.estSousFoudre();
-        for (Effet effet : effets) {
-            effet.appliquer(monstreActif);
-        }
+
+        appliquerEffets(monstreActif);
 
         if (!immobilise) {
             deplacement.avancer(monstreActif);
+        }
+    }
+
+    private void initialiserEffets() {
+        effetPoison = new EffetPoison();
+        effetGlace = new EffetGlace();
+        effetFeu = new EffetFeu();
+        effetFoudre = new EffetFoudre();
+
+        effets = new ArrayList<>();
+        effets.add(effetPoison);
+        effets.add(effetGlace);
+        effets.add(effetFeu);
+        effets.add(effetFoudre);
+    }
+
+    private void appliquerEffets(Monstre monstreActif) {
+        for (Effet effet : effets) {
+            effet.appliquer(monstreActif);
         }
     }
 

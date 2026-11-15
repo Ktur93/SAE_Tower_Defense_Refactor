@@ -19,12 +19,7 @@ public class GestionnaireMonstre {
             }
         }
 
-        // Une fois les monstres deplaces, on fait leurs actions s'ils en ont
-        for (Monstre monstre : monstres) {
-            if (!monstre.estMort()) {
-                monstre.agir(monstres);
-            }
-        }
+        faireAgirMonstres(monstres);
     }
 
     public void supprimerMonstresMorts(
@@ -38,5 +33,13 @@ public class GestionnaireMonstre {
             }
             return false;
         });
+    }
+
+    private void faireAgirMonstres(ObservableList<Monstre> monstres) {
+        for (Monstre monstre : monstres) {
+            if (!monstre.estMort()) {
+                monstre.agir(monstres);
+            }
+        }
     }
 }
