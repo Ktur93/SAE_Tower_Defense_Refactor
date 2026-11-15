@@ -51,17 +51,12 @@ public class GestionnaireVague {
     }
 
     // Lancement de la prochaine vague
+    //otp nouveau code
+    // Lance une vague seulement si aucune ne tourne et s il en reste.
     public void lancerProchaineVague() {
-
-        if (vagueEnCours.get()) {
-            return;
+        if (!vagueEnCours.get() && indiceVague < vagues.size()) {
+            vagueEnCours.set(true);
         }
-
-        if (indiceVague >= vagues.size()) {
-            return;
-        }
-
-        vagueEnCours.set(true);
     }
 
     // Mise à jour de la vague actuelle

@@ -5,6 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.Operations.AmeliorationTour;
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.Operations.PlacementTour;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.Tour;
@@ -19,31 +21,12 @@ public class GestionnaireTour {
         this.prixAmelioration = 75;
     }
 
-    //CSP ancien code
-    // public boolean placerTour(Tour tour, Carte carte, Partie partie) {
     //CSP nouveau code
+    //otp nouveau code
+    // Delegue le placement et son paiement a l operation specialisee.
     public boolean placerTour(Tour tour, Partie partie) {
-
-        if (tour == null) {
-            return false;
-        }
-
-        Position position = tour.getPosition();
-
-        //CSP ancien code
-        // if (!carte.estCaseTour(position.getX(), position.getY())) {
-        if (!Carte.getInstance().estCaseTour(position.getX(), position.getY())) {
-            return false;
-        }
-
-        if (partie.getRubis() < tour.getPrix()) {
-            return false;
-        }
-
-        partie.retirerRubis(tour.getPrix());
-        this.tours.add(tour);
-
-        return true;
+        PlacementTour placement = new PlacementTour(partie, Carte.getInstance(), tour, tours);
+        return placement.executer();
     }
 
     public void faireAttaquerTours(int compteur, ObservableList<Monstre> monstres, ObservableList<Projectile> projectiles) {
@@ -57,15 +40,11 @@ public class GestionnaireTour {
         }
     }
 
+    //otp nouveau code
+    // Delegue l amelioration avec le prix actuel du gestionnaire.
     public void faireAmeliorerTours(Tour tour, Partie partie) {
-
-        if (tour.getNivT() < tour.getNivMax()
-                && partie.getRubis() >= prixAmelioration) {
-
-            tour.ameliorer();
-            partie.retirerRubis(prixAmelioration);
-            tour.setNivT(tour.getNivT() + 1);
-        }
+        AmeliorationTour amelioration = new AmeliorationTour(partie, tour, prixAmelioration);
+        amelioration.executer();
     }
 
     public Tour trouverTour(Position position) {

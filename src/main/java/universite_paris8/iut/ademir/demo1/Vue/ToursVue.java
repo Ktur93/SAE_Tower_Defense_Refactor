@@ -1,6 +1,5 @@
 package universite_paris8.iut.ademir.demo1.Vue;
 import javafx.collections.ListChangeListener;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,13 +11,17 @@ import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.*;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 public class ToursVue {
     public static final int TAILLE_TUILE = 64;
 
     private Partie partie;
     private Pane paneSprites;
     private Image imageTour = null;
-    private ImageView sprite;
+    private final Map<Tour, ImageView> sprites = new IdentityHashMap<>();
+    private final Map<Tour, Label> niveaux = new IdentityHashMap<>();
 
     public ToursVue(Partie partie , Pane paneSprites) {
         this.partie = partie;
@@ -28,6 +31,8 @@ public class ToursVue {
 
     ListChangeListener<Tour> listener = new ListChangeListener<Tour>() {
 
+        //cmd nouveau code
+        // Retire uniquement les sprites des tours effectivement supprimees.
         public void onChanged(Change<? extends Tour> c) {
 
             while (c.next()) {
@@ -39,7 +44,9 @@ public class ToursVue {
                 }
 
                 if (c.wasRemoved()) {
-                    enleverSpriteTour();
+                    for (Tour tour : c.getRemoved()) {
+                        enleverSpriteTour(tour);
+                    }
                 }
             }
         }
@@ -47,6 +54,8 @@ public class ToursVue {
 
 
 
+    //cmd nouveau code
+    // Associe chaque tour a son image et son etiquette pour permettre une suppression ciblee.
     public void creerSpriteTour(Tour tour) {
 
         if (tour instanceof TourCanon) {
@@ -93,7 +102,7 @@ public class ToursVue {
         nivL.textProperty().bind(tour.nivTProperty().asString("niveau: %d"));
 
 
-        sprite = new ImageView(imageTour);
+        ImageView sprite = new ImageView(imageTour);
         sprite.setId("tour");
 
         sprite.setFitWidth(TAILLE_TUILE);
@@ -104,9 +113,13 @@ public class ToursVue {
 
 
         paneSprites.getChildren().add(sprite);
+        sprites.put(tour, sprite);
+        niveaux.put(tour, nivL);
 
     }
 
+    //cmd nouveau code
+    // Actualise l image existante pour conserver une seule image par tour.
     public void MiseAjourImage(Tour t){
         if (t instanceof TourCanon) {
             if(t.getNivT() == 2){
@@ -178,24 +191,23 @@ public class ToursVue {
             }
         }
 
-        Position position = t.getPosition();
-        sprite = new ImageView(imageTour);
-        sprite.setFitWidth(TAILLE_TUILE);
-        sprite.setFitHeight(TAILLE_TUILE);
-        sprite.setLayoutX(position.getX() * TAILLE_TUILE);
-        sprite.setLayoutY(position.getY() * TAILLE_TUILE);
-        paneSprites.getChildren().add(sprite);
-
+        ImageView sprite = sprites.get(t);
+        if (sprite != null) {
+            sprite.setImage(imageTour);
+        }
     }
 
-    public void enleverSpriteTour(){
-        for (int i = paneSprites.getChildren().size() - 1; i >= 0; i--) {
-
-            Node node = paneSprites.getChildren().get(i);
-
-            if ("tour".equals(node.getId())) {
-                paneSprites.getChildren().remove(i);
-            }
+    //cmd nouveau code
+    // L annulation retire la tour concernee sans effacer les autres tours ni leurs niveaux.
+    public void enleverSpriteTour(Tour tour) {
+        ImageView sprite = sprites.remove(tour);
+        Label niveau = niveaux.remove(tour);
+        if (sprite != null) {
+            paneSprites.getChildren().remove(sprite);
+        }
+        if (niveau != null) {
+            niveau.textProperty().unbind();
+            paneSprites.getChildren().remove(niveau);
         }
     }
 }
