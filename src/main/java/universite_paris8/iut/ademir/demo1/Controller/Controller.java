@@ -15,6 +15,7 @@ import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Etats.*;
+import universite_paris8.iut.ademir.demo1.Modele.Sorts.Sort;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.*;
 import universite_paris8.iut.ademir.demo1.Vue.*;
 
@@ -27,6 +28,10 @@ public class Controller implements Initializable {
     private static final int TAILLE_TUILE = 64;
 
     // Pane
+    @FXML
+    private Button btnBouleFeu;
+    @FXML
+    private Button btnBouleNeige;
     @FXML
     private TilePane paneCarte;
     @FXML
@@ -73,6 +78,7 @@ public class Controller implements Initializable {
     @FXML
     private Button btnAnnuler;
 
+    private EffetSortVue effetSortVue;
     private Carte carte;
     private Partie partie;
     private CarteVue carteVue;
@@ -118,6 +124,28 @@ public class Controller implements Initializable {
                 labelCiblage.setText("Tour (" + position.getX() + ", " + position.getY() + ") : " + tour.getNomStrategieCiblage());
                 strategieClic = new StrategiePlacement();
             }
+        }
+    }
+
+    private class StrategieSort implements StrategieClic {
+        private final Sort sort;
+        public StrategieSort(Sort sort) {
+            this.sort = sort;
+        }
+        @Override
+        public void executer(Position position) {
+            if (!partie.peutLancerSort(sort)) {
+                strategieClic = new StrategiePlacement();
+                return;
+            }
+            double x = position.getX() * TAILLE_TUILE + 32;
+            double y = position.getY() * TAILLE_TUILE + 32;
+
+            // Retour au mode normal après le clic.
+            strategieClic = new StrategiePlacement();
+
+            effetSortVue.lancerAnimation(sort, x, y, () -> partie.lancerSort(sort, x, y)
+            );
         }
     }
 
@@ -228,6 +256,14 @@ public class Controller implements Initializable {
             carteVue.changerDecor(partie.getNiveau());
         });
 
+        btnBouleFeu.setOnAction(event -> {
+            strategieClic = new StrategieSort(Sort.BOULE_FEU);
+        });
+
+        btnBouleNeige.setOnAction(event -> {
+            strategieClic = new StrategieSort(Sort.BOULE_NEIGE);
+        });
+
         btnAnnuler.setOnAction(actionEvent -> {
             partie.annulerDernierPlacement();
         });
@@ -246,6 +282,7 @@ public class Controller implements Initializable {
         toursVue = new ToursVue(partie, paneSprites);
         ProjectileVue projectileVue = new ProjectileVue(partie, paneSprites);
         coeurVue = new CoeurVue(partie, paneCoeurs);
+        effetSortVue = new EffetSortVue(paneDecoration);
     }
 
     private void initialiserClicsSouris() {
@@ -422,6 +459,8 @@ public class Controller implements Initializable {
         btnPoison.setDisable(desactiver);
         btnFeu.setDisable(desactiver);
         btnAmeliorer.setDisable(desactiver);
+        btnBouleFeu.setDisable(desactiver);
+        btnBouleNeige.setDisable(desactiver);
         if (btnCiblage != null) {
             btnCiblage.setDisable(desactiver);
         }

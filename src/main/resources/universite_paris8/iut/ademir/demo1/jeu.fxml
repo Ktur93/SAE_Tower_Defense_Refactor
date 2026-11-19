@@ -82,6 +82,9 @@
             <!-- Annule le dernier placement avant le lancement de la vague suivante. -->
             <Button fx:id="btnAnnuler" text="Annuler le placement" maxWidth="Infinity"/>
             <Button fx:id="btnRecommencer" text="Recommencer" maxWidth="Infinity"/>
+            <Label text="sort" style="-fx-text-fill: white;-fx-font-size: 18;-fx-font-weight: bold;"/>
+            <Button fx:id="btnBouleFeu" text="boule de feux - 50" maxWidth="Infinity"/>
+            <Button fx:id="btnBouleNeige" text="boule de neige - 35" maxWidth="Infinity"/>
         </VBox>
     </right>
 </BorderPane>
