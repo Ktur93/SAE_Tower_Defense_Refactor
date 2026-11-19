@@ -1,6 +1,11 @@
 package universite_paris8.iut.ademir.demo1.Modele.Jeu;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -8,17 +13,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
-import universite_paris8.iut.ademir.demo1.Modele.Monstres.*;
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.Operations.AchatCase;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
+import universite_paris8.iut.ademir.demo1.Modele.Projectile.ProjectileExplosion;
+import universite_paris8.iut.ademir.demo1.Modele.Sorts.Sort;
 import universite_paris8.iut.ademir.demo1.Modele.Tour.Tour;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
+
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.Commandes.CommandePlacementTour;
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.Commandes.HistoriqueCommandes;
+import universite_paris8.iut.ademir.demo1.Modele.Jeu.Etats.*;
 
 import java.util.ArrayList;
 
 public class Partie {
 
-    private final static int TAILLE_VAGUE = 5;
-
-    private ObservableList<Tour> tours;
     private ObservableList<Monstre> monstres;
     private ObservableList<Projectile> projectiles;
 
@@ -26,65 +35,59 @@ public class Partie {
     private ArrayList<Position> chemin2;
     private ArrayList<Position> chemin3;
 
-    private ArrayList<Vague> vagues;
-
-
-    private int rubis;
-    private int pvPortail;
     private int prixCase;
 
-    private int indiceVague;
     private IntegerProperty pvPortailIntegerProperty;
-
-    private int prixAmelioration;
     private int compteur;
     private int compteurDefaite;
 
-    private BooleanProperty vagueEnCours; //
-    private BooleanProperty toutesLesVaguesTermine; //
-    private BooleanProperty portailMort; //
+    private BooleanProperty toutesLesVaguesTermine;
+    private BooleanProperty portailMort;
     private BooleanProperty victoire;
     private BooleanProperty defaite;
 
-    private boolean victoireBoucleLanceUneFois;
-    private boolean defaiteBoucleLanceUneFois;
+    private final ReadOnlyObjectWrapper<EtatPartie> etatPartie;
+    private final HistoriqueCommandes historiqueCommandes;
 
+    private final GestionnaireTour gestionnaireTours;
+    private final GestionnaireMonstre gestionnaireMonstres;
+    private final GestionnaireVague gestionnaireVagues;
+    private final GestionnaireScore gestionnaireScore;
 
-    public Partie(ArrayList<Position> chemin,ArrayList<Position> chemin2,ArrayList<Position> chemin3) {
-
-        this.tours = FXCollections.observableArrayList();
+    //eta nouveau code
+    //cmd nouveau code
+    // Initialise l etat actif, ses indicateurs derives et l historique des placements.
+    public Partie(ArrayList<Position> chemin, ArrayList<Position> chemin2, ArrayList<Position> chemin3) {
         this.monstres = FXCollections.observableArrayList();
         this.projectiles = FXCollections.observableArrayList();
-
 
         this.chemin = chemin;
         this.chemin2 = chemin2;
         this.chemin3 = chemin3;
 
-        this.vagues = new ArrayList<>();
-
-
-        this.rubis = 400;
-        this.pvPortail = 10;
         this.prixCase = 25;
 
-        this.indiceVague = 0;
-        this.vagueEnCours = new SimpleBooleanProperty(false);
         this.pvPortailIntegerProperty = new SimpleIntegerProperty(3);
 
-        this.prixAmelioration = 75;
-        this.indiceVague = 0;
         this.compteur = 0;
         this.compteurDefaite = 0;
 
-        this.vagueEnCours = new SimpleBooleanProperty(false);
         this.toutesLesVaguesTermine = new SimpleBooleanProperty(false);
         this.portailMort = new SimpleBooleanProperty(false);
         this.victoire = new SimpleBooleanProperty(false);
         this.defaite = new SimpleBooleanProperty(false);
-        this.victoireBoucleLanceUneFois = false;
-        this.defaiteBoucleLanceUneFois = false;
+        this.etatPartie = new ReadOnlyObjectWrapper<>(new EtatEnCours());
+        this.historiqueCommandes = new HistoriqueCommandes();
+        this.victoire.bind(Bindings.createBooleanBinding(
+                () -> etatPartie.get() instanceof EtatVictoire, etatPartie));
+        this.defaite.bind(Bindings.createBooleanBinding(
+                () -> etatPartie.get() instanceof EtatDefaite, etatPartie));
+        this.portailMort.bind(pvPortailIntegerProperty.lessThanOrEqualTo(0));
 
+        this.gestionnaireTours = new GestionnaireTour();
+        this.gestionnaireMonstres = new GestionnaireMonstre();
+        this.gestionnaireVagues = new GestionnaireVague(chemin, chemin2, chemin3);
+        this.gestionnaireScore = new GestionnaireScore();
         creeVagues();
     }
 
@@ -92,213 +95,121 @@ public class Partie {
         return chemin;
     }
 
-    public int getPrixAmelioration() {
-        return prixAmelioration;
-    }
-
+    //eta nouveau code
+    // Delegue chaque mise a jour a l etat courant de la partie.
     public void mettreAJour() {
-        // Faire avancer les modeles bougeables
-        faireAvancerMonstres();
-        faireAttaquerTours(compteur);
-        supprimerMonstresMorts();
-        projectilePourMettreAJour();
-
-
-
-
-        // Verification de si la vague est en cours pour envoyer les monstres et sinon avancer la vague suivante
-        if (this.vagueEnCours.get()) {
-            Vague vagueActuelle = getVagues().get(indiceVague);
-            vagueActuelle.mettreAJourVague(compteur, getMonstres());
-
-
-            if (vagueActuelle.tousLesMonstresEnvoyes() && getMonstres().isEmpty()) {
-                this.indiceVague++;
-                this.prixAmelioration += 75;
-                this.vagueEnCours.set(false);
-
-            }
-        }
-
-
-        // partie Victoire
-        if (getIndiceVague() > (getVagues().size() - 1) && !(victoireBoucleLanceUneFois) && !(portailMort())) {
-            this.victoireBoucleLanceUneFois = true;
-            this.victoire.set(true);
-        }
-
-        // partie defaite
-        if (portailMort() && !defaiteBoucleLanceUneFois) {
-            if (!(getVagueEnCours())) {
-                defaite.set(true);
-                this.compteurDefaite = compteur;
-                defaiteBoucleLanceUneFois = true;
-            }
-        }
-
-        if (!(portailMort())) {
-            defaite.set(false);
-        }
+        etatPartie.get().mettreAJour(this);
     }
 
     public void faireAvancerMonstres() {
-
-        for (int i = 0 ; i < getMonstres().size() ; i++){
-            Monstre monstre = getMonstres().get(i);
-            monstre.avancer();
-            if (monstre.estADestination()) {
-                recevoirDegatPortail(monstre.getDegat());
-                monstre.setRecompense(0);
-                monstre.setPv(0);
-            }
-        }
+        gestionnaireMonstres.faireAvancerMonstres(monstres, this);
     }
 
     public void supprimerMonstresMorts() {
-        this.monstres.removeIf(monstre -> {
-            if (monstre.estMort()) {
-                this.rubis += monstre.getRecompense();
-                return true;
-            }
-            return false;
-        });
+        gestionnaireMonstres.supprimerMonstresMorts(monstres, this);
     }
 
-
-    public void acheterCase(Position position, Carte carte) {
-        if (rubis >= prixCase ) {
-            if (carte.caseDebloquer(position)) {
-                rubis -= prixCase;
+    //CSP nouveau code
+    //otp nouveau code
+    // Augmente le prix suivant uniquement apres un achat reussi.
+    //eta nouveau code
+    // Autorise les achats uniquement pendant la phase jouable.
+    public void acheterCase(Position position) {
+        if (etatPartie.get().peutInteragir()) {
+            AchatCase achat = new AchatCase(this, Carte.getInstance(), position, prixCase);
+            if (achat.executer()) {
                 prixCase += 25;
             }
         }
     }
 
-
-    public boolean placerTour(Tour tour, Carte carte) {
-        if (tour == null) {
-            return false;
+    //CSP nouveau code
+    //cmd nouveau code
+    //eta nouveau code
+    // Memorise les placements annulables entre deux vagues et respecte l etat du jeu.
+    public boolean placerTour(Tour tour) {
+        boolean placee = false;
+        if (etatPartie.get().peutInteragir()) {
+            CommandePlacementTour commande = new CommandePlacementTour(this, gestionnaireTours, tour);
+            if (getVagueEnCours()) {
+                placee = commande.executer();
+            } else {
+                placee = historiqueCommandes.executer(commande);
+            }
         }
-
-        Position position = tour.getPosition();
-
-        if (!carte.estCaseTour(position.getX(), position.getY())) {
-            return false;
-        }
-
-        if (this.rubis < tour.getPrix()) {
-            return false;
-        }
-
-        this.rubis -= tour.getPrix();
-        this.tours.add(tour);
-
-        return true;
+        return placee;
     }
 
     public void faireAttaquerTours(int compteur) {
+        gestionnaireTours.faireAttaquerTours(
+                compteur,
+                monstres,
+                projectiles
+        );
+    }
 
-        for (int i = 0; i < tours.size(); i++) {
-            Tour tour = tours.get(i);
-            Projectile projectile = tour.attaquer(monstres, compteur);
-            if (projectile != null) {
-                projectiles.add(projectile);
+    //cmd nouveau code
+    //eta nouveau code
+    // Une amelioration reussie termine la possibilite d annuler les placements precedents.
+    public void faireAmeliorerTours(Tour tour) {
+        if (etatPartie.get().peutInteragir() && tour != null) {
+            int niveauAvant = tour.getNivT();
+            gestionnaireTours.faireAmeliorerTours(tour, this);
+            if (tour.getNivT() > niveauAvant) {
+                historiqueCommandes.vider();
             }
         }
     }
 
-    public void faireAmeliorerTours(Tour t){
-        if (t.getNivT() < t.getNivMax() && rubis >= this.prixAmelioration) {
-            t.ameliorer();
-            rubis -= prixAmelioration;
-            t.setNivT(t.getNivT() + 1);
-        }
-    }
-
-
-
-
-
     public void creeVagues() {
-        Vague vague1 = new Vague();
-        vague1.creeVague1(chemin);
-
-        Vague vague2 = new Vague();
-        vague2.creeVague2(chemin, chemin2);
-
-        Vague vague3 = new Vague();
-        vague3.creeVague3(chemin, chemin2);
-
-        Vague vague4 = new Vague();
-        vague4.creeVague4(chemin, chemin2, chemin3);
-
-        Vague vague5 = new Vague();
-        vague5.creeVague5(chemin, chemin2, chemin3);
-
-        getVagues().add(vague1);
-        getVagues().add(vague2);
-        getVagues().add(vague3);
-        getVagues().add(vague4);
-        getVagues().add(vague5);
-
+        gestionnaireVagues.creerVagues(
+                chemin,
+                chemin2,
+                chemin3
+        );
     }
 
+    //cmd nouveau code
+    //eta nouveau code
+    // Le lancement d une vague valide definitivement les placements precedents.
     public void lancerProchaineVague() {
-        if (this.vagueEnCours.get()) {
-
-        } else if (indiceVague >= vagues.size()) {
-
-        } else {
-            this.vagueEnCours.set(true);
+        if (etatPartie.get().peutInteragir()) {
+            gestionnaireVagues.lancerProchaineVague();
+            if (getVagueEnCours()) {
+                historiqueCommandes.vider();
+            }
         }
     }
 
+    //eta nouveau code
+    //cmd nouveau code
+    // Reinitialise le modele avant de notifier le retour a l etat jouable.
     public void recommnencer() {
-        setIndiceVaguePlusUn(0);
-        this.rubis = 400;
-        this.prixCase = 25;
+        gestionnaireVagues.recommencer(chemin, chemin2, chemin3);
+        prixCase = 25;
         pvPortailIntegerProperty.set(3);
-        this.defaiteBoucleLanceUneFois = false;
-        this.prixAmelioration = 75;
-
-        // recreation des vagues
-        // recreation des vagues
-        vagues.get(0).creeVague1(this.chemin);
-
-        vagues.get(1).creeVague2(
-                this.chemin,
-                this.chemin2
-        );
-
-        vagues.get(2).creeVague3(
-                this.chemin,
-                this.chemin2
-        );
-
-        vagues.get(3).creeVague4(
-                this.chemin,
-                this.chemin2,
-                this.chemin3
-        );
-
-        vagues.get(4).creeVague5(
-                this.chemin,
-                this.chemin2,
-                this.chemin3
-        );
-
-        for (int i = 0; i < TAILLE_VAGUE;i++){
-            vagues.get(i).setIndiceMonstreZero();
-        }
-
-        tours.clear();
+        compteur = 0;
+        compteurDefaite = 0;
+        toutesLesVaguesTermine.set(false);
+        gestionnaireTours.recommencer();
+        gestionnaireScore.recommencer();
+        monstres.clear();
+        projectiles.clear();
+        historiqueCommandes.vider();
+        Carte.getInstance().caseBloquer();
+        changerEtat(new EtatEnCours());
     }
 
-    public void projectilePourMettreAJour(){
+    public void projectilePourMettreAJour() {
         int i = 0;
 
         while (i < projectiles.size()) {
             Projectile projectile = projectiles.get(i);
+
+            if (projectile instanceof ProjectileExplosion) {
+                ((ProjectileExplosion) projectile).setMonstres(monstres);
+            }
+
             if (projectile.avancer()) {
                 projectiles.remove(i);
                 System.out.println("supp");
@@ -308,58 +219,77 @@ public class Partie {
         }
     }
 
-
-
-
     public int getRubis() {
-        return this.rubis;
+        return gestionnaireScore.getRubis();
+    }
+
+    public void ajouterRubis(int montant) {
+        gestionnaireScore.ajouterRubis(montant);
+    }
+
+    public void retirerRubis(int montant) {
+        gestionnaireScore.retirerRubis(montant);
     }
 
     public ObservableList<Monstre> getMonstres() {
         return monstres;
     }
 
-    public ObservableList<Projectile> getProjectiles(){
+    public ObservableList<Projectile> getProjectiles() {
         return projectiles;
     }
 
+    public Tour trouverTour(Position position) {
+        return gestionnaireTours.trouverTour(position);
+    }
+
+
     public ObservableList<Tour> getTours() {
-        return tours;
+        return gestionnaireTours.getTours();
     }
 
-    public int getIndiceVague () {
-        return this.indiceVague;
+    public int getPrixAmelioration() {
+        return gestionnaireTours.getPrixAmelioration();
     }
 
-    public int getIndiceVaguePlusUn () {
-        return indiceVague + 1;
+    public int getIndiceVague() {
+        return gestionnaireVagues.getIndiceVague();
     }
-    public void setIndiceVaguePlusUn(int i){
-        indiceVague = i;
+
+    public int getIndiceVaguePlusUn() {
+        return gestionnaireVagues.getIndiceVaguePlusUn();
+    }
+
+
+    public void setIndiceVague(int i) {
+        gestionnaireVagues.setIndiceVague(i);
+    }
+
+    public ArrayList<Vague> getVagues() {
+        return gestionnaireVagues.getVagues();
+    }
+
+    public boolean getVagueEnCours() {
+        return gestionnaireVagues.getVagueEnCours();
+    }
+
+    public BooleanProperty vagueEnCoursProperty() {
+        return gestionnaireVagues.vagueEnCoursProperty();
     }
 
     public boolean getToutesLesVaguesTerminees() {
-        return this.getIndiceVague() >= this.vagues.size();
-    }
-
-    public ArrayList<Vague> getVagues () {
-        return this.vagues;
-    }
-
-    public boolean getVagueEnCours () {
-        return this.vagueEnCours.get();
+        return gestionnaireVagues.getToutesLesVaguesTerminees();
     }
 
     public int getPrixCase() {
         return this.prixCase;
     }
 
-
     public int getCompteur() {
         return this.compteur;
     }
 
-    public IntegerProperty pvPortailIntegerPropertyProperty(){
+    public IntegerProperty pvPortailIntegerPropertyProperty() {
         return pvPortailIntegerProperty;
     }
 
@@ -369,13 +299,6 @@ public class Partie {
 
     public int getCompteurDefaite() {
         return this.compteurDefaite;
-    }
-
-
-
-
-    public void setDefaiteProperty (boolean defaite) {
-        this.defaite.set(defaite);
     }
 
     public void setCompteurPlusPlus() {
@@ -388,11 +311,6 @@ public class Partie {
 
     public boolean portailMort() {
         return pvPortailIntegerProperty.get() <= 0;
-    }
-
-
-    public BooleanProperty vagueEnCoursProperty() {
-        return vagueEnCours;
     }
 
     public BooleanProperty toutesLesVaguesTermineProperty() {
@@ -411,17 +329,137 @@ public class Partie {
         return victoire;
     }
 
-
-
-
-    public void setIndiceVague (int i) {
-        this.indiceVague = i;
-    }
-
+    //eta nouveau code
+    // Utilise la meme source de vie que l affichage et les transitions d etat.
     public int getPvPortail() {
-        return this.pvPortail;
+        return pvPortailIntegerProperty.get();
     }
 
+    public int getNiveau() {
+        return gestionnaireVagues.getNiveau();
+    }
 
+    //eta nouveau code
+    // Le choix du niveau reste reserve a une partie jouable.
+    public void changerNiveau() {
+        if (etatPartie.get().peutInteragir()) {
+            gestionnaireVagues.changerNiveau(chemin, chemin2, chemin3);
+        }
+    }
 
+    //eta nouveau code
+    // Execute la simulation seulement lorsque l etat courant le demande.
+    public void mettreAJourJeu() {
+        // Faire avancer les modeles bougeables
+        faireAvancerMonstres();
+        faireAttaquerTours(compteur);
+        supprimerMonstresMorts();
+        projectilePourMettreAJour();
+
+        boolean vagueTerminee = gestionnaireVagues.mettreAJour(
+                compteur,
+                monstres
+        );
+
+        if (vagueTerminee) {
+            gestionnaireTours.augmenterPrixAmelioration();
+        }
+        toutesLesVaguesTermine.set(getToutesLesVaguesTerminees());
+    }
+
+    //obs nouveau code
+    // Permet aux vues d observer directement la reserve du gestionnaire de score.
+    public ReadOnlyIntegerProperty rubisProperty() {
+        return gestionnaireScore.rubisProperty();
+    }
+
+    //eta nouveau code
+    // Lit l etat qui pilote actuellement la simulation.
+    public EtatPartie getEtatPartie() {
+        return etatPartie.get();
+    }
+
+    //eta nouveau code
+    // Permet au controleur d observer les changements d etat.
+    public ReadOnlyObjectProperty<EtatPartie> etatPartieProperty() {
+        return etatPartie.getReadOnlyProperty();
+    }
+
+    //eta nouveau code
+    // Notifie la transition et memorise le debut du delai de defaite.
+    public void changerEtat(EtatPartie nouvelEtat) {
+        if (nouvelEtat != null) {
+            if (nouvelEtat instanceof EtatDefaite) {
+                compteurDefaite = compteur;
+            }
+            if (!nouvelEtat.peutInteragir()) {
+                historiqueCommandes.vider();
+            }
+            etatPartie.set(nouvelEtat);
+        }
+    }
+
+    //cmd nouveau code
+    // Verifie que l historique est utilisable avant la prochaine vague.
+    public boolean peutAnnulerPlacement() {
+        return etatPartie.get().peutInteragir()
+                && !getVagueEnCours() && historiqueCommandes.peutAnnuler();
+    }
+
+    //cmd nouveau code
+    // Annule le dernier placement si la phase du jeu le permet.
+    public boolean annulerDernierPlacement() {
+        return peutAnnulerPlacement() && historiqueCommandes.annulerDerniere();
+    }
+
+    //cmd nouveau code
+    // Notifie la disponibilite de l historique au bouton d annulation.
+    public ReadOnlyBooleanProperty annulationPossibleProperty() {
+        return historiqueCommandes.annulationPossibleProperty();
+    }
+
+    public boolean peutLancerSort(Sort sort) {
+        return sort != null
+                && etatPartie.get().peutInteragir()
+                && getRubis() >= sort.getCout();
+    }
+
+    public boolean lancerSort(Sort sort, double x, double y) {
+
+        if (!peutLancerSort(sort)) {
+            return false;
+        }
+
+        retirerRubis(sort.getCout());
+
+        double rayon = sort.getRayon();
+
+        for (Monstre monstre : new ArrayList<>(monstres)) {
+
+            if (monstre.estMort() || monstre.estADestination()) {
+                continue;
+            }
+
+            // Centre du monstre sur la carte.
+            double monstreX = monstre.getX() + 32;
+            double monstreY = monstre.getY() + 32;
+
+            double distanceX = monstreX - x;
+            double distanceY = monstreY - y;
+
+            double distanceCarree =
+                    distanceX * distanceX + distanceY * distanceY;
+
+            if (distanceCarree <= rayon * rayon) {
+
+                if (sort == Sort.BOULE_FEU) {
+                    monstre.recevoirDegatsFeu(sort.getDegats());
+                } else if (sort == Sort.BOULE_NEIGE) {
+                    monstre.recevoirDegatsGlace(sort.getDegats());
+                }
+            }
+        }
+
+        return true;
+    }
 }

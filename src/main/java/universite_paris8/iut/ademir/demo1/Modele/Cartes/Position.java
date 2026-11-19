@@ -11,13 +11,21 @@ public class Position {
         this.x = x;
         this.y = y;
     }
-
+    // a changer pour mettre getLigne
     public int getX() {
         return x;
     }
 
+    // a changer pour mettre getColonne
     public int getY() {
         return y;
+    }
+
+    public boolean estDansRayon(Position autre, int rayon) {
+        int dx = this.x - autre.getX();
+        int dy = this.y - autre.getY();
+
+        return (dx * dx + dy * dy <= rayon * rayon);
     }
 
 

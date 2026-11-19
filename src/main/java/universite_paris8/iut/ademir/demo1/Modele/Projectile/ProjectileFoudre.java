@@ -1,0 +1,10 @@
+package universite_paris8.iut.ademir.demo1.Modele.Projectile;
+import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
+import universite_paris8.iut.ademir.demo1.Modele.Projectile.DegatsAvecEffet.DegatsFoudre;
+
+public class ProjectileFoudre extends Projectile {
+
+    public ProjectileFoudre(double x, double y, int degats, Monstre cible) {
+        super(x, y, 20, degats, cible, new DegatsFoudre(), new DeplacementDirect());
+    }
+}

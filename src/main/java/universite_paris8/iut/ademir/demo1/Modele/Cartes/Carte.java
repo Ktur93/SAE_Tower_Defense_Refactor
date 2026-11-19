@@ -3,11 +3,17 @@ package universite_paris8.iut.ademir.demo1.Modele.Cartes;
 import java.util.ArrayList;
 
 public class Carte {
+    public static final int CASE_DEBLOQUEE = 19;
+    public static final int CASE_BLOQUEE = 20;
+
+    //CSP nouveau code
+    private static final Carte uniqueInstance = new Carte();
 
     private int[][] carte;
     private int[][] carteDecoration;
 
-    public Carte(){
+
+    private Carte(){
         carte = new int[][]{
                 {21,21,21,21,21,21,21,21,21,21,21, 0,16, 0, 0,21,21,21,21,21,21,21,21,21,21},
                 {21,21,21,21,21,21,21,21,21,21, 0, 0, 2, 0, 0, 0,21,21,21,21,21,21,21,21,21},
@@ -49,6 +55,11 @@ public class Carte {
     }
 
 
+
+    //CSP nouveau code
+    public static Carte getInstance() {
+        return uniqueInstance;
+    }
 
     public int getLargeur() {
         return carte[0].length;
@@ -126,23 +137,29 @@ public class Carte {
 
 
     public boolean caseDebloquer(Position position) {
-        for (int i = 0; i < carte.length; i++) {
-            for (int j = 0; j < carte[i].length; j++) {
-                if (position.getX() == j && position.getY() == i && carte[i][j] == 20) {
-                    carte[i][j] = 19;
-                    System.out.println("achat de la case");
-                    return true;
-                }
-            }
+        int colonne = position.getX();
+        int ligne = position.getY();
+
+        // Vérifier la position avant d'accéder au tableau
+        if (!estDansCarte(colonne, ligne)) {
+            return false;
         }
+
+        // Le code 20 correspond à une case bloquée
+        if (carte[ligne][colonne] == CASE_BLOQUEE) {
+            carte[ligne][colonne] = CASE_DEBLOQUEE;
+            System.out.println("achat de la case");
+            return true;
+        }
+
         return false;
     }
 
     public void caseBloquer(){
         for (int i = 0; i < carte.length; i++) {
             for (int j = 0; j < carte[i].length; j++) {
-                if (carte[i][j] == 19) {
-                    carte[i][j] = 20;
+                if (carte[i][j] == CASE_DEBLOQUEE) {
+                    carte[i][j] = CASE_BLOQUEE;
                     System.out.println("case bloquer");
                 }
             }
@@ -172,7 +189,7 @@ public class Carte {
 
         int tuile = Tuile(colonne, ligne);
 
-        if(tuile == 19) {
+        if (tuile == CASE_DEBLOQUEE) {
             return true;
         }
 
@@ -180,44 +197,10 @@ public class Carte {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void setCarte(int x, int y, int code) {
-        if (dansCarte(x, y)) {
+        if (estDansCarte(x, y)) {
             carte[y][x] = code;
         }
     }
 
-    public boolean dansCarte(int x, int y) {
-        if(x >= 0 && x < getLargeur() && y >= 0 && y < getHauteur()){
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

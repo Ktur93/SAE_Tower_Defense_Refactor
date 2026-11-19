@@ -5,6 +5,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.Node;
+import java.util.ArrayList;
+import java.util.List;
 
 import universite_paris8.iut.ademir.demo1.Main;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Carte;
@@ -16,6 +19,8 @@ public class CarteVue {
     private Pane paneDecoration;
     private Label labelDefaite;
     private Label labelVictoire;
+    private int niveau = 1;
+    private final List<Node> decorationsAffichees = new ArrayList<>();
 
     public CarteVue(Carte carte, TilePane paneCarte , Pane paneDecoration) {
         this.carte = carte;
@@ -32,9 +37,59 @@ public class CarteVue {
         labelVictoire.setStyle("-fx-font-size: 150px;");
     }
 
-    public void dessinerCarte() {
+    public void changerDecor(int nouveauNiveau) {
+        niveau = nouveauNiveau;
+        viderCarte();
+        dessinerCarte();
+    }
 
-        Image herbe = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/herbe.png"));
+    private Image chargerImage(String nom) {
+        return new Image(Main.class.getResourceAsStream("Tuiles/Bloc/" + nom));
+    }
+
+    public void dessinerCarte() {
+        // Supprime uniquement les anciennes decorations, sans toucher aux labels.
+        paneDecoration.getChildren().removeAll(decorationsAffichees);
+        decorationsAffichees.clear();
+        paneCarte.getChildren().clear();
+
+        Image herbe;
+        Image eau;
+        Image arbre;
+        Image pierre;
+
+        switch (niveau) {
+            case 2:
+                herbe = chargerImage("desert_sable.png");
+                eau = chargerImage("desert_sable_mouvant.gif");
+                arbre = chargerImage("desert_cactus.png");
+                pierre = arbre;
+                break;
+            case 3:
+                herbe = chargerImage("neige_glace.png");
+                eau = chargerImage("glace_eau.gif");
+                arbre = chargerImage("arbre_glace.png");
+                pierre = arbre;
+                break;
+            case 4:
+                herbe = chargerImage("terre_feu.png");
+                eau = chargerImage("lave_feu.gif");
+                arbre = chargerImage("arbre_feu.png");
+                pierre = arbre;
+                break;
+            case 5:
+                herbe = chargerImage("corrompu_sol.png");
+                eau = chargerImage("corrompu_eau.gif");
+                arbre = chargerImage("corrompu_arbre.png");
+                pierre = arbre;
+                break;
+            default:
+                herbe = chargerImage("herbe.png");
+                eau = chargerImage("eau/Uberren.gif");
+                arbre = chargerImage("pixel-arbre.png");
+                pierre = eau;
+                break;
+        }
 
         Image cheminD = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/SensChemin-D/chemin-D.png"));
         Image cheminD90 = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/SensChemin-D/chemin-D90.png"));
@@ -62,12 +117,6 @@ public class CarteVue {
         Image EmplacementToursDebloquer = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/EmplacementTours/TDebloquer.png"));
         Image EmplacementToursBloquer = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/EmplacementTours/TBloquer.png"));
 
-        Image eau = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/eau/Uberren.gif"));
-        Image arbre = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/pixel-arbre.png"));
-        Image pierre = new Image(Main.class.getResourceAsStream("Tuiles/Bloc/eau/Uberren.gif"));
-
-
-
         int tailleTuile = 64;
 
         for (int ligne = 0; ligne < carte.getHauteur(); ligne++) {
@@ -82,14 +131,12 @@ public class CarteVue {
                         image = herbe;
                         break;
 
-
                     case 1:
                         image = cheminD;
                         break;
                     case 2:
                         image = cheminD90;
                         break;
-
 
                     case 3:
                         image = cheminL;
@@ -176,11 +223,11 @@ public class CarteVue {
                         break;
 
                 }
+
                 ImageView tuile = new ImageView(image);
                 tuile.setFitWidth(tailleTuile);
                 tuile.setFitHeight(tailleTuile);
                 paneCarte.getChildren().add(tuile);
-
             }
         }
 
@@ -199,8 +246,12 @@ public class CarteVue {
                     case 23:
                         image = pierre;
                         break;
-
                 }
+
+                if (image == null) {
+                    continue;
+                }
+
                 ImageView tuileDecoration = new ImageView(image);
                 tuileDecoration.setLayoutX(col * 64);
                 tuileDecoration.setLayoutY(ligne * 60);
@@ -208,6 +259,7 @@ public class CarteVue {
                 tuileDecoration.setFitHeight(90);
 
                 paneDecoration.getChildren().add(tuileDecoration);
+                decorationsAffichees.add(tuileDecoration);
             }
         }
     }
@@ -232,13 +284,17 @@ public class CarteVue {
         paneDecoration.getChildren().remove(this.labelDefaite);
     }
 
-
-
     public void viderCarte() {
         paneCarte.getChildren().clear();
     }
 
     public void affichageViePortail(){
 
+    }
+
+    //eta nouveau code
+    // Retire aussi l ecran de victoire lors du redemarrage.
+    public void retirerEcranVictoire() {
+        paneDecoration.getChildren().remove(labelVictoire);
     }
 }

@@ -6,7 +6,8 @@ import javafx.collections.ObservableList;
 import universite_paris8.iut.ademir.demo1.Modele.Cartes.Position;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.Monstre;
 import universite_paris8.iut.ademir.demo1.Modele.Projectile.Projectile;
-import universite_paris8.iut.ademir.demo1.Modele.Projectile.ProjectileBoulet;
+import universite_paris8.iut.ademir.demo1.Modele.Tour.Ciblage.CiblagePremier;
+import universite_paris8.iut.ademir.demo1.Modele.Tour.Ciblage.StrategieCiblage;
 
 
 public abstract class Tour {
@@ -24,62 +25,51 @@ public abstract class Tour {
 
     private IntegerProperty nivT;
 
+    private StrategieCiblage strategieCiblage;
+
 
     public Tour(int attaque, int prix, int porter, Position position, long cadence , int nivMax) {
         this.atk = attaque;
         this.prix = prix;
         this.porter = porter;
         this.nivMax = nivMax;
-
         this.dernierTir = 0;
         this.cadence = cadence;
-
-
         this.position = position;
-
         this.nivT = new SimpleIntegerProperty(1);
+        this.strategieCiblage = new CiblagePremier();
     }
 
 
     public Projectile attaquer(ObservableList<Monstre> monstres, int compteur) {
-
-        if (compteur - dernierTir >= cadence) {
-
-            Monstre cible = null;
-
-            int i = 0;
-            while (i < monstres.size() && cible == null) {
-                Monstre monstre = monstres.get(i);
-
-                if (estAPorter(monstre)) {
-                    cible = monstre;
-                }
-
-                i++;
-            }
-
-            if (cible != null) {
-                dernierTir = compteur;
-                return creerProjectile(cible);
-            }
+        // la tour attend si sa cadence nest pas encore passee
+        if (compteur - dernierTir < cadence) {
+            return null;
         }
 
-        return null;
+        Monstre cible = strategieCiblage.choisirCible(monstres, this);
+
+        if (cible == null) {
+            return null;
+        }
+
+        dernierTir = compteur;
+        return creerProjectile(cible);
     }
 
 
-    private boolean estAPorter(Monstre monstre) {
-        int x = position.getX() - monstre.getPosition().getX();
-        int y = position.getY() - monstre.getPosition().getY();
-        int CalculePorter = (x * x + y * y);
-        if (CalculePorter <= getPorter() * getPorter()){
-            return true;
-        }
-        return false;
+    public boolean estAPorter(Monstre monstre) {
+        return position.estDansRayon(monstre.getPosition(), porter);
+    }
+
+    public Projectile creerProjectile(Monstre cible) {
+        double x = getPosition().getX() * 64;
+        double y = getPosition().getY() * 64;
+        return nouveauProjectile(x, y, cible);
     }
 
     public abstract void ameliorer();
-    public abstract Projectile creerProjectile(Monstre cible);
+    protected abstract Projectile nouveauProjectile(double x, double y, Monstre cible);
 
 
 
@@ -139,4 +129,17 @@ public abstract class Tour {
     public void setNivMax(int nivMax) {
         this.nivMax = nivMax;
     }
+
+    public void setStrategieCiblage(StrategieCiblage strategieCiblage) {
+        this.strategieCiblage = strategieCiblage;
+    }
+
+    public void changerStrategieCiblage() {
+        strategieCiblage = strategieCiblage.strategieSuivante();
+    }
+
+    public String getNomStrategieCiblage() {
+        return strategieCiblage.getType().getNom();
+    }
+
 }

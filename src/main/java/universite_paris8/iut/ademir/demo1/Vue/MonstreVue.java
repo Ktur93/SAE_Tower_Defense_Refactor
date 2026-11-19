@@ -1,24 +1,20 @@
 package universite_paris8.iut.ademir.demo1.Vue;
 
 import javafx.collections.ListChangeListener;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import universite_paris8.iut.ademir.demo1.Main;
 import universite_paris8.iut.ademir.demo1.Modele.Jeu.Partie;
 import universite_paris8.iut.ademir.demo1.Modele.Monstres.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+import java.net.URL;
 
 public class MonstreVue {
 
     private static final int TAILLE_TUILE = 64;
-
     private Partie partie;
     private Pane paneSprites;
 
@@ -31,24 +27,29 @@ public class MonstreVue {
 
     ListChangeListener<Monstre> listener = new ListChangeListener<Monstre>() {
 
+        @Override
         public void onChanged(Change<? extends Monstre> c) {
-
             while (c.next()) {
 
                 if (c.wasAdded()) {
-                    creerSprite(c.getAddedSubList().get(0));
+                    // Cree l'affichage de chaque monstre ajoute et dans le for each il ya un array list de tout les monstres ajouté
+                    for (Monstre monstre : c.getAddedSubList()) {
+                        creerSprite(monstre);
+                    }
                 }
 
                 if (c.wasRemoved()) {
-                    supprimerAffichageMonstre(c.getRemoved().get(0));
+                    // Retirer l'affichage de chaque monstre supprime et dans le for each il ya un array list de tout les monstres supprimé
+                    for (Monstre monstre : c.getRemoved()) {
+                        supprimerAffichageMonstre(monstre);
+                    }
                 }
             }
         }
     };
 
 
-
-    public void supprimerAffichageMonstre(Monstre m){
+    public void supprimerAffichageMonstre(Monstre m) {
         for (int i = paneSprites.getChildren().size() - 1; i >= 0; i--) {
 
             String id = paneSprites.getChildren().get(i).getId();
@@ -73,6 +74,12 @@ public class MonstreVue {
 
         // quand le monstre devient glace ou n est plus glace on change son image une seule fois
         monstre.glaceProperty().addListener((obs, old, now) -> {
+            sprite.setImage(imageMonstre(monstre));
+        });
+        monstre.feuProperty().addListener((obs, old, now) -> {
+            sprite.setImage(imageMonstre(monstre));
+        });
+        monstre.foudreProperty().addListener((obs, old, now) -> {
             sprite.setImage(imageMonstre(monstre));
         });
 
@@ -107,69 +114,63 @@ public class MonstreVue {
         paneSprites.getChildren().add(sprite);
     }
 
-
+    // Choisit l espece reelle, la variante exterieure et l etat feu/gel/foudre.
+    //mpd nouveaucode
     public Image imageMonstre(Monstre monstre) {
-
-        Image image = null;
-
-        if (monstre instanceof Zombie) {
-            if(monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombieGlace.png"));
-            }
-            else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/zombie.png"));
-            }
-        } else if (monstre instanceof Araignee) {
-            if(monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araigneeGlace.png"));
-            }
-            else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/araignee.png"));
-            }
-        } else if (monstre instanceof Squelette) {
-            if(monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squeletteGlace.png"));
-            }
-            else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/squelette.png"));
-            }
-        } else if (monstre instanceof Pillager) {
-            if(monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillagerGlace.png"));
-            }
-            else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/pillager.png"));
-            }
-        } else if (monstre instanceof Boss) {
-            if(monstre.getMonstreGlacee()) {
-                image = new Image(Main.class.getResourceAsStream("Monstres/bossGlace.png"));
-            }
-            else {
-                image = new Image(Main.class.getResourceAsStream("Monstres/boss.png"));
-            }
+        String espece = getNomEspece(monstre);
+        if (espece == null) {
+            System.out.printf("Image introuvable : espece de monstre inconnue.%n");
+            return null;
         }
+        String variante = getNomVariante(espece, monstre.getVariante());
+        String chemin = getCheminImage(espece, variante, getNomEtat(monstre));
+        URL ressource = Main.class.getResource(chemin);
 
-        return image;
+        if (ressource == null) {
+            System.out.printf("Image absente : %s ; utilisation de l image normale.%n", chemin);
+            chemin = getCheminImage(espece, "", "");
+            ressource = Main.class.getResource(chemin);
+        }
+        if (ressource == null) {
+            System.out.printf("Image de remplacement absente : %s%n", chemin);
+            return null;
+        }
+        return new Image(ressource.toExternalForm());
     }
 
-//    public void effetAffichage() {
-//
-//        for (Node node : paneSprites.getChildren()) {
-//
-//            if (node instanceof ImageView) {
-//
-//                ImageView sprite = (ImageView) node;
-//
-//                for (Monstre monstre : partie.getMonstres()) {
-//
-//                    if (monstre.getMonstreID().equals(sprite.getId())) {
-//
-//                        sprite.setImage(imageMonstre(monstre));
-//
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private String getNomEspece(Monstre monstre) {
+        return monstre.getTypeMonstre().getNom();
+    }
 
+    //mpd nouveaucode
+    private String getNomVariante(String espece, VarianteMonstre variante) {
+        boolean feminin = espece.equals("araignee") || espece.equals("chauveSouris");
+        switch (variante) {
+            case RAPIDE: return "Rapide";
+            case RESISTANT: return feminin ? "Resistante" : "Resistant";
+            case SOIGNEUR: return feminin ? "Soigneuse" : "Soigneur";
+            default: return "";
+        }
+    }
+
+    //mpd nouveaucode
+    private String getNomEtat(Monstre monstre) {
+        if (monstre.estSousFoudre()) return "Foudre";
+        if (monstre.estEnFeu()) return "Feu";
+        if (monstre.estGlace()) return "Glace";
+        return "";
+    }
+
+    //mpd nouveaucode
+    private String getCheminImage(String espece, String variante, String etat) {
+        String nom = espece;
+        if (espece.equals("chauveSouris")) {
+            boolean imageNormale = variante.isEmpty() && !etat.equals("Feu");
+            boolean imageResistante = variante.equals("Resistante") && etat.isEmpty();
+            if (imageNormale || imageResistante) {
+                nom = "ChauveSouris";
+            }
+        }
+        return "Monstres/" + nom + variante + etat + ".png";
+    }
 }
